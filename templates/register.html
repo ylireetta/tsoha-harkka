@@ -1,0 +1,26 @@
+{% extends "baselayout.html" %}
+
+{% block title %}Register A New User{% endblock %}
+
+{% block content %}
+<div class="col-8">
+    <form action="/register" method="POST">
+        <div class="form-group col-6">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" name="username">
+        </div>
+        <div class="form-group col-6">
+            <label for="password1">Password:</label>
+            <input type="password" class="form-control" id="password1" name="password1">
+        </div>
+        <div class="form-group col-6">
+            <label for="password2">Retype password:</label>
+            <input type="password" class="form-control" id="password2" name="password2">
+        </div>
+        <div class="form-group col-6">
+            <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

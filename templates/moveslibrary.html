@@ -1,0 +1,33 @@
+{% extends "baselayout.html" %}
+
+{% block title %}Moves Library{% endblock %}
+
+{% block content %}
+
+<div class="col-8">
+
+    <form action="/moveslibrary" method="GET">
+        <div class="form-group col-6">
+            <label for="query">Search for:</label>
+            <input type="text" class="form-control " name="query" id="query" class="form-control">
+        </div>
+        <div class="form-group col-6">
+            <input type="checkbox" name="showmineonly">Show my moves only
+        </div>
+        <div class="form-group col-6">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+        
+
+    </form>
+</div>
+
+<div class="col-8">
+    <ul>
+        {% for move in moves %}
+            <li>{{move.name}}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
