@@ -36,9 +36,11 @@ def login(username, password):
 
 def update_user(username, allow_follow):
     sql = "UPDATE users SET allow_follow=:allow_follow WHERE username=:username"
-    
+    bool_value = allow_follow.lower() == "true"
+
     try:
-        db.session.execute(sql, {"username": username, "allow_follow": bool(allow_follow)})
+        db.session.execute(sql, {"username": username, "allow_follow": bool_value})
+        db.session.commit()
         return True
     except:
         return False

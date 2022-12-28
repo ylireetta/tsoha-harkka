@@ -68,14 +68,14 @@ def moveslibrary():
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
-    allow_follow_value = users.get_allow_follow(session["username"])[0]
-
+    allow_follow_value = bool(users.get_allow_follow(session["username"])[0])
+    
     if request.method == "GET":
         return render_template("profile.html", allow_follow_value=allow_follow_value)
     
     if request.method == "POST" and "allow_follow" in request.form:
         success = users.update_user(session["username"], request.form["allow_follow"])
-        allow_follow_value = request.form["allow_follow"]
+        allow_follow_value = request.form["allow_follow"].lower() == "true"
         if not success:
             return render_template("profile.html", errormessage="Could not update allow_follow.")
 
