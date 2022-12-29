@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="./static/styles.css">
 <script src="./static/javascript.js"></script>
 <title>TSOHA Trainer's App - {% block title %}{% endblock %}</title>
 
@@ -26,11 +27,15 @@
         {% endif %}
     </nav>
 
-    {% if errormessage %}
-    <div class="alert alert-danger" role="alert" id="alertbox">
-        {{errormessage}}
-    </div>
-    {% endif %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{category}}" role="alert" id="messagebox">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 </div>
 
 

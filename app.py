@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, flash
 from os import getenv
 
 
@@ -26,12 +26,14 @@ def register():
         password2 = request.form["password2"]
 
         if password1 != password2:
-            return render_template("register.html", errormessage="Password fields do not match.")
+            flash("Password fields do not match.", "alert alert-danger")
+            return redirect("/register")
 
         if users.register_user(username, password1):
             return redirect("/")
         else:
-            return render_template("register.html", errormessage="Registration unsuccessful.")
+            flash("Registration unsuccessful.", "alert alert-danger")
+            return redirect("/register")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -46,7 +48,8 @@ def login():
         if users.login(username, password):
             return redirect("/")
         else:
-            return redirect("/register")
+            flash("Login unsuccessful - check username and password.", "alert alert-danger")
+            return redirect("/")
 
 @app.route("/logout")
 def logout():
@@ -68,6 +71,7 @@ def moveslibrary():
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
+    # Get current value from database.
     allow_follow_value = bool(users.get_allow_follow(session["username"])[0])
     
     if request.method == "GET":
@@ -75,10 +79,23 @@ def profile():
     
     if request.method == "POST" and "allow_follow" in request.form:
         success = users.update_user(session["username"], request.form["allow_follow"])
-        allow_follow_value = request.form["allow_follow"].lower() == "true"
+
         if not success:
-            return render_template("profile.html", errormessage="Could not update allow_follow.")
+            flash("Could not update allow_follow.", "alert alert-danger")
+            return render_template("profile.html")
+        else:
+            flash("Allow_follow successfully updated!", "alert alert-success")
+            allow_follow_value = request.form["allow_follow"].lower() == "true"
 
-    return render_template("profile.html", allow_follow_value=allow_follow_value)    
-        
+            return render_template("profile.html", allow_follow_value=allow_follow_value)
 
+@app.route("/addmove", methods=["POST"])
+def add_move():
+    move_name = request.form["movename"]
+
+    if not moves.add_move(move_name):
+        flash(f"Could not add new move {move_name}.", "alert alert-danger")
+        return redirect("/moveslibrary")
+
+    flash(f"New move {move_name} successfully added!", "alert alert-success")
+    return redirect("/moveslibrary")
