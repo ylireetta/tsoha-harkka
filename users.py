@@ -17,7 +17,7 @@ def register_user(username, password):
         db.session.commit()
     except:
         return False
-    return True
+    return login(username, password)
 
 def login(username, password):
     sql = "SELECT id, password FROM users WHERE username=:username"

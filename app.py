@@ -92,8 +92,9 @@ def profile():
 @app.route("/addmove", methods=["POST"])
 def add_move():
     move_name = request.form["movename"]
+    user_id = session["user_id"]
 
-    if not moves.add_move(move_name):
+    if not moves.add_move(move_name, user_id):
         flash(f"Could not add new move {move_name}.", "alert alert-danger")
         return redirect("/moveslibrary")
 

@@ -12,11 +12,11 @@ def search_moves(query):
     moves = result.fetchall()
     return moves
 
-def add_move(new_move):
+def add_move(new_move, user_id):
     
     try:
-        sql = "INSERT INTO moves (name) VALUES (:name)"
-        db.session.execute(sql, {"name": new_move})
+        sql = "INSERT INTO moves (name, added_by) VALUES (:name, :user_id)"
+        db.session.execute(sql, {"name": new_move, "user_id": user_id})
         db.session.commit()
         return True
     except:
