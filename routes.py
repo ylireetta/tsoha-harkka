@@ -28,7 +28,8 @@ def register():
             flash("Registration unsuccessful.", "alert alert-danger")
             return redirect("/register")
 
-    return render_template("register.html")
+    flash("Registered successfully - logged you in for convenience!", "alert alert-success")
+    return redirect("/")
 
 
 @APP.route("/login", methods=["GET", "POST"])
@@ -44,8 +45,8 @@ def login():
 
 @APP.route("/logout")
 def logout():
-    del session["username"]
-    del session["user_id"]
+    session.pop("username", None)
+    session.pop("user_id", None)
     return redirect("/")
 
 @APP.route("/moveslibrary")
