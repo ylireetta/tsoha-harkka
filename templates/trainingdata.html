@@ -1,0 +1,50 @@
+{% extends "baselayout.html" %}
+
+
+{% block title %}Training Data{% endblock %}
+
+{% block content %}
+
+<div class="col-8">
+    <h1>My training templates</h1>
+    <table id="trainingtemplates" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th class="th-sm">Template name</th>
+                <th class="th-sm">Moves in template</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t_template in complete_templates %}
+            <tr>
+                <td>{{t_template[0]}}</td>
+                <td>{{t_template[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-primary" onclick="toggleVisibility('hiddendiv')">Create training template</button>
+    <div id="hiddendiv">
+        <form action="/createtemplate" method="POST">
+            <div class="form-group col-6">
+                <label for="template_name">Template name:</label>
+                <input type="text" class="form-control" name="template_name" id="template_name">
+            </div>
+            <div class="form-group col-6">
+                <label for="selected_moves">Select moves for template:</label>
+                <select name="selected_moves" id="selected_moves" class="selectpicker" multiple>
+                    {% for move in moves %}
+                        <option value={{move.id}}>{{move.move_name}}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+            <div class="form-group col-6">
+                <button type="submit" class="btn btn-primary">Save template</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

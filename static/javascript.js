@@ -13,3 +13,8 @@ function toggleVisibility(elementId) {
         ? element.style.display = "block" 
         : element.style.display = "none"
 }
+
+// Multiselect allowed for dropdown lists.
+$(document).ready(function() {
+    $(".selectpicker").selectpicker();
+});
