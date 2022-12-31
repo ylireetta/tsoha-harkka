@@ -52,6 +52,9 @@ def logout():
 
 @APP.route("/moveslibrary")
 def moveslibrary():
+    if not session.get("user_id"):
+        return redirect("/")
+
     render_moves = ""
 
     if "query" in request.args:
@@ -64,6 +67,9 @@ def moveslibrary():
 
 @APP.route("/profile", methods=["GET", "POST"])
 def profile():
+    if not session.get("user_id"):
+        return redirect("/")
+
     # Get current value from database.
     allow_follow_value = bool(users.get_allow_follow(session["username"])[0])
 
@@ -78,8 +84,12 @@ def profile():
 
     return render_template("profile.html", allow_follow_value=allow_follow_value)
 
-@APP.route("/addmove", methods=["POST"])
+@APP.route("/addmove", methods=["GET", "POST"])
 def add_move():
+    # If a user types in url directly, redirect.
+    if request.method == "GET":
+        return redirect("/moveslibrary")
+
     move_name = request.form["movename"]
     user_id = session["user_id"]
 
@@ -92,6 +102,9 @@ def add_move():
 
 @APP.route("/trainingdata", methods=["GET", "POST"])
 def trainingdata():
+    if not session.get("user_id"):
+        return redirect("/")
+
     render_moves = moves.get_moves()
     my_templates = templates.get_users_templates(session["user_id"])
 
@@ -123,8 +136,12 @@ def trainingdata():
 
     return render_template("trainingdata.html", moves=render_moves, users_templates=my_templates, complete_templates=complete_templates)
 
-@APP.route("/createtemplate", methods=["POST"])
+@APP.route("/createtemplate", methods=["GET", "POST"])
 def create_template():
+    # If a user types in url directly, redirect.
+    if request.method == "GET":
+        return redirect("/trainingdata")
+
     creation_ret = templates.create_template(session["user_id"], request.form["template_name"]) 
     if isinstance(creation_ret, int):       
         # Get selected move ids as list.
