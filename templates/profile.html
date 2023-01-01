@@ -5,18 +5,102 @@
 {% block content %}
 
 <div class="col-8">
-    Welcome, {{session.username}}!
-    
-    <form action="/profile" method="POST">
-        <div class="form-group col-6">
-            <label for="allow_follow">Allow others to follow me</label>
-            <input type="radio" name="allow_follow" id="allow_follow" value="true" {{'checked' if allow_follow_value else ''}}> Yes
-            <input type="radio" name="allow_follow" id="allow_follow" value="false" {{'checked' if not allow_follow_value else ''}}> No
+    <h1>User Profile</h1>
+
+    <div class="accordion">
+        <div class="card">
+            <div class="card-header" id="myTemplatesHeading">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#myTemplates" aria-expanded="true" aria-controls="myTemplates">
+                        My Templates
+                    </button>
+                </h5>
+            </div>
+
+            <div id="myTemplates" class="collapse show" aria-labelledby="myTemplatesHeading" data-parent="#accordion">
+                <div class="card-body"><table id="trainingtemplates" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th class="th-sm">Template name</th>
+                <th class="th-sm">Moves in template</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t_template in complete_templates %}
+            <tr>
+                <td>{{t_template[0]}}</td>
+                <td>{{t_template[1]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv">Create training template</a>
+    <div class="collapse" id="hiddendiv">
+        <form action="/createtemplate" method="POST">
+            <div class="form-group col-6">
+                <label for="template_name">Template name:</label>
+                <input type="text" class="form-control" name="template_name" id="template_name">
+            </div>
+            <div class="form-group col-6">
+                <label for="selected_moves">Select moves for template:</label>
+                <select name="selected_moves" id="selected_moves" class="selectpicker" multiple>
+                    {% for move in moves %}
+                        <option value={{move.id}}>{{move.move_name}}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+            <div class="form-group col-6">
+                <button type="submit" class="btn btn-primary">Save template</button>
+            </div>
+        </form>
+    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group col-6">
-            <button type="submit" class="btn btn-primary">Save changes</button>
+
+        <div class="card">
+            <div class="card-header" id="followedUsersHeading">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#followedUsers" aria-expanded="false" aria-controls="followedUsers">
+                        Followed Users
+                    </button>
+                </h5>
+            </div>
+
+            <div id="followedUsers" class="collapse" aria-labelledby="followedUsersHeading" data-parent="#accordion">
+                <div class="card-body">
+                    This is where we show who we follow
+                </div>
+            </div>
         </div>
-    </form>
+
+        <div class="card">
+            <div class="card-header" id="userSettingsHeading">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#userSettings" aria-expanded="false" aria-controls="userSettings">
+                        User Settings
+                    </button>
+                </h5>
+            </div>
+
+            <div id="userSettings" class="collapse" aria-labelledby="userSettingsHeading" data-parent="#accordion">
+                <div class="card-body">
+                    <form action="/profile" method="POST">
+                        <div class="form-group col-6">
+                            <label for="allow_follow">Allow others to follow me</label>
+                            <input type="radio" name="allow_follow" id="allow_follow" value="true" {{'checked' if allow_follow_value else ''}}> Yes
+                            <input type="radio" name="allow_follow" id="allow_follow" value="false" {{'checked' if not allow_follow_value else ''}}> No
+                        </div>
+                        <div class="form-group col-6">
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

@@ -70,41 +70,6 @@ def profile():
     if not session.get("user_id"):
         return redirect("/")
 
-    # Get current value from database.
-    allow_follow_value = bool(users.get_allow_follow(session["username"])[0])
-
-    if request.method == "POST" and "allow_follow" in request.form:
-        success = users.update_user(session["username"], request.form["allow_follow"])
-
-        if not success:
-            flash("Could not update allow_follow.", "alert alert-danger")
-        else:
-            flash("Allow_follow successfully updated!", "alert alert-success")
-            allow_follow_value = request.form["allow_follow"].lower() == "true"
-
-    return render_template("profile.html", allow_follow_value=allow_follow_value)
-
-@APP.route("/addmove", methods=["GET", "POST"])
-def add_move():
-    # If a user types in url directly, redirect.
-    if request.method == "GET":
-        return redirect("/moveslibrary")
-
-    move_name = request.form["movename"]
-    user_id = session["user_id"]
-
-    if not moves.add_move(move_name, user_id):
-        flash(f"Could not add new move {move_name}.", "alert alert-danger")
-        return redirect("/moveslibrary")
-
-    flash(f"New move {move_name} successfully added!", "alert alert-success")
-    return redirect("/moveslibrary")
-
-@APP.route("/trainingdata", methods=["GET", "POST"])
-def trainingdata():
-    if not session.get("user_id"):
-        return redirect("/")
-
     render_moves = moves.get_moves()
     my_templates = templates.get_users_templates(session["user_id"])
 
@@ -134,13 +99,52 @@ def trainingdata():
                 moves_string = ", ".join(template_moves)
                 complete_templates.append((row["template_name"], moves_string))
 
-    return render_template("trainingdata.html", moves=render_moves, users_templates=my_templates, complete_templates=complete_templates)
+    # Get current value from database.
+    allow_follow_value = bool(users.get_allow_follow(session["username"])[0])
+
+    if request.method == "POST" and "allow_follow" in request.form:
+        success = users.update_user(session["username"], request.form["allow_follow"])
+
+        if not success:
+            flash("Could not update allow_follow.", "alert alert-danger")
+        else:
+            flash("Allow_follow successfully updated!", "alert alert-success")
+            allow_follow_value = request.form["allow_follow"].lower() == "true"
+
+    return render_template("profile.html", allow_follow_value=allow_follow_value, moves=render_moves, users_templates=my_templates, complete_templates=complete_templates)
+
+@APP.route("/addmove", methods=["GET", "POST"])
+def add_move():
+    # If a user types in url directly, redirect.
+    if request.method == "GET":
+        return redirect("/moveslibrary")
+
+    move_name = request.form["movename"]
+    user_id = session["user_id"]
+
+    if not moves.add_move(move_name, user_id):
+        flash(f"Could not add new move {move_name}.", "alert alert-danger")
+        return redirect("/moveslibrary")
+
+    flash(f"New move {move_name} successfully added!", "alert alert-success")
+    return redirect("/moveslibrary")
+
+@APP.route("/trainingdata", methods=["GET", "POST"])
+def trainingdata():
+    if not session.get("user_id"):
+        return redirect("/")
+
+    return render_template("trainingdata.html")
 
 @APP.route("/createtemplate", methods=["GET", "POST"])
 def create_template():
     # If a user types in url directly, redirect.
     if request.method == "GET":
-        return redirect("/trainingdata")
+        return redirect("/profile")
+    
+    if len(request.form.getlist("selected_moves")) == 0:
+        flash("Please select moves when creating a training template.", "alert alert-danger")
+        return redirect("/profile")
 
     creation_ret = templates.create_template(session["user_id"], request.form["template_name"]) 
     if isinstance(creation_ret, int):       
@@ -152,4 +156,4 @@ def create_template():
     else:
         flash("Could not create new template.", "alert alert-danger")
 
-    return redirect("/trainingdata")
+    return redirect("/profile")

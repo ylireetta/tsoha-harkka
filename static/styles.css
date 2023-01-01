@@ -1,0 +1,4 @@
+/* Don't let dropdown menu disappear behind other divs (e.g. on the profile page). */
+.accordion .card {
+    overflow: visible;
+}
