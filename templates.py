@@ -23,3 +23,13 @@ def add_to_reference_table(template_id, move_id):
         return True
     except:
         return False
+
+def delete_template(template_id):
+    # TODO: check that the user who is deleting is also the one who has created template.
+    try:
+        sql = "DELETE FROM trainingtemplates WHERE id=:template_id"
+        DB.session.execute(sql, {"template_id":template_id})
+        DB.session.commit()
+        return True
+    except:
+        return False

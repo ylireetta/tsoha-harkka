@@ -30,6 +30,11 @@
             <tr>
                 <td>{{t_template[0]}}</td>
                 <td>{{t_template[1]}}</td>
+                <td>
+                    <form action="/deletetemplate/{{t_template[2]}}" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

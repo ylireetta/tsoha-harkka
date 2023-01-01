@@ -89,7 +89,7 @@ def profile():
             # Case 2: No longer the same template. Append the data we collected earlier to the final boss array. Set variables so that we can keep going.
             if row["id"] != last_ID:
                 moves_string = ", ".join(template_moves)
-                complete_templates.append((last_name, moves_string))
+                complete_templates.append((last_name, moves_string, row["id"]))
                 last_ID = row["id"]
                 last_name = row["template_name"]
                 template_moves = []
@@ -97,7 +97,7 @@ def profile():
             # Case 3: We reached the last row of the table. It has the same id as the former one, so check index against length of result table.
             if index == len(my_templates):
                 moves_string = ", ".join(template_moves)
-                complete_templates.append((row["template_name"], moves_string))
+                complete_templates.append((row["template_name"], moves_string, row["id"]))
 
     # Get current value from database.
     allow_follow_value = bool(users.get_allow_follow(session["username"])[0])
@@ -156,4 +156,12 @@ def create_template():
     else:
         flash("Could not create new template.", "alert alert-danger")
 
+    return redirect("/profile")
+
+@APP.route("/deletetemplate/<int:id>", methods=["GET", "POST"])
+def delete_template(id):
+    if templates.delete_template(id):
+        flash(f"Template {id} deleted!", "alert alert-success")
+    else:
+        flash(f"Could not delete template {id}.", "alert alert-danger")
     return redirect("/profile")

@@ -18,6 +18,6 @@ CREATE TABLE trainingtemplates (
 );
 
 CREATE TABLE moves_in_template (
-    template_id INTEGER REFERENCES trainingtemplates,
-    move_id INTEGER REFERENCES moves
+    template_id INTEGER REFERENCES trainingtemplates ON DELETE CASCADE,
+    move_id INTEGER REFERENCES moves ON DELETE CASCADE
 );
