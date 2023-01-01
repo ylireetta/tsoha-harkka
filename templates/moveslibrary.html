@@ -5,8 +5,9 @@
 {% block content %}
 
 <div class="col-8">
-    <a href="#" onclick="toggleVisibility('hiddendiv')">Add move to library</a>
-    <div id="hiddendiv">
+    <a class="btn btn-primary" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv">Add move to library</a>
+    
+    <div class="collapse" id="hiddendiv">
         <form action="/addmove" method="POST">
             <div class="form-group col-6">
                 <label for="movename">Move name:</label>

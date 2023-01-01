@@ -24,8 +24,8 @@
         </tbody>
     </table>
 
-    <button type="button" class="btn btn-primary" onclick="toggleVisibility('hiddendiv')">Create training template</button>
-    <div id="hiddendiv">
+    <a class="btn btn-primary" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv">Create training template</a>
+    <div class="collapse" id="hiddendiv">
         <form action="/createtemplate" method="POST">
             <div class="form-group col-6">
                 <label for="template_name">Template name:</label>
