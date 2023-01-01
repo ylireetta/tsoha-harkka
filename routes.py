@@ -77,24 +77,31 @@ def profile():
     complete_templates = []
     if len(my_templates) > 0:
         template_moves = []
-        last_ID = my_templates[0]["id"]
+        last_id = my_templates[0]["id"]
         last_name = my_templates[0]["template_name"]
         index = 0
 
         for row in my_templates:
             index = index + 1
-            # Case 1: We are still looking at a row that belongs to a template we have already seen. Append move to array and keep going.
-            if last_ID == row["id"]:
+            # Case 1: We are still looking at a row that belongs to a template we have already seen.
+            # Append move to array and keep going.
+            if last_id == row["id"]:
                 template_moves.append(row["move_name"])
-            # Case 2: No longer the same template. Append the data we collected earlier to the final boss array. Set variables so that we can keep going.
-            if row["id"] != last_ID:
+            # Case 2: No longer the same template.
+            # Append the data we collected earlier to the final boss array.
+            # Set variables so that we can keep going.
+            if row["id"] != last_id:
                 moves_string = ", ".join(template_moves)
                 complete_templates.append((last_name, moves_string, row["id"]))
-                last_ID = row["id"]
+                last_id = row["id"]
                 last_name = row["template_name"]
                 template_moves = []
-                template_moves.append(row["move_name"]) # Append the first move of new template row, since we just "cleared" the whole move array. Note that clear() does not actually work for some reason.
-            # Case 3: We reached the last row of the table. It has the same id as the former one, so check index against length of result table.
+                # Append the first move of new template row,
+                # since we just "cleared" the whole move array.
+                # Note that clear() does not actually work for some reason.
+                template_moves.append(row["move_name"])
+            # Case 3: We reached the last row of the table.
+            # It has the same id as the former one, so check index against length of result table.
             if index == len(my_templates):
                 moves_string = ", ".join(template_moves)
                 complete_templates.append((row["template_name"], moves_string, row["id"]))
@@ -111,7 +118,13 @@ def profile():
             flash("Allow_follow successfully updated!", "alert alert-success")
             allow_follow_value = request.form["allow_follow"].lower() == "true"
 
-    return render_template("profile.html", allow_follow_value=allow_follow_value, moves=render_moves, users_templates=my_templates, complete_templates=complete_templates)
+    return render_template(
+        "profile.html",
+        allow_follow_value=allow_follow_value,
+        moves=render_moves,
+        users_templates=my_templates,
+        complete_templates=complete_templates
+    )
 
 @APP.route("/addmove", methods=["GET", "POST"])
 def add_move():
@@ -141,13 +154,13 @@ def create_template():
     # If a user types in url directly, redirect.
     if request.method == "GET":
         return redirect("/profile")
-    
+
     if len(request.form.getlist("selected_moves")) == 0:
         flash("Please select moves when creating a training template.", "alert alert-danger")
         return redirect("/profile")
 
-    creation_ret = templates.create_template(session["user_id"], request.form["template_name"]) 
-    if isinstance(creation_ret, int):       
+    creation_ret = templates.create_template(session["user_id"], request.form["template_name"])
+    if isinstance(creation_ret, int):
         # Get selected move ids as list.
         selected_moves = request.form.getlist("selected_moves")
         for move_id in selected_moves:
@@ -158,10 +171,10 @@ def create_template():
 
     return redirect("/profile")
 
-@APP.route("/deletetemplate/<int:id>", methods=["GET", "POST"])
-def delete_template(id):
-    if templates.delete_template(id):
-        flash(f"Template {id} deleted!", "alert alert-success")
+@APP.route("/deletetemplate/<int:id_>", methods=["GET", "POST"])
+def delete_template(id_):
+    if templates.delete_template(id_):
+        flash(f"Template {id_} deleted!", "alert alert-success")
     else:
-        flash(f"Could not delete template {id}.", "alert alert-danger")
+        flash(f"Could not delete template {id_}.", "alert alert-danger")
     return redirect("/profile")
