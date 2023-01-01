@@ -8,7 +8,8 @@ CREATE TABLE users (
 CREATE TABLE moves (
     id SERIAL PRIMARY KEY,
     move_name TEXT UNIQUE,
-    added_by INTEGER REFERENCES users
+    added_by INTEGER REFERENCES users,
+    visible BOOLEAN DEFAULT true
 );
 
 CREATE TABLE trainingtemplates (
@@ -20,4 +21,20 @@ CREATE TABLE trainingtemplates (
 CREATE TABLE moves_in_template (
     template_id INTEGER REFERENCES trainingtemplates ON DELETE CASCADE,
     move_id INTEGER REFERENCES moves ON DELETE CASCADE
+);
+
+CREATE TABLE trainingsessions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    created_at TIMESTAMP,
+    completed BOOLEAN DEFAULT false
+);
+
+CREATE TABLE sets (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    session_id INTEGER REFERENCES trainingsessions,
+    move_id INTEGER REFERENCES moves,
+    reps INTEGER,
+    weights REAL
 );

@@ -51,6 +51,11 @@
             {% for move in moves %}
             <tr>
                 <td>{{move.move_name}}</td>
+                <td>
+                    <form action="/deletemove/{{move.id}}" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

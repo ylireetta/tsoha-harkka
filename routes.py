@@ -178,3 +178,12 @@ def delete_template(id_):
     else:
         flash(f"Could not delete template {id_}.", "alert alert-danger")
     return redirect("/profile")
+
+@APP.route("/deletemove/<int:id_>", methods=["GET", "POST"])
+def delete_move(id_):
+    if moves.delete_move(id_):
+        flash(f"Move {id_} deleted!", "alert alert-success")
+    else:
+        flash(f"Could not delete move {id_}.", "alert alert-danger")
+    return redirect("/moveslibrary")
+
