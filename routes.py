@@ -3,6 +3,7 @@ from app import APP
 import users
 import moves
 import templates
+import trainingsessions
 
 @APP.route("/")
 def index():
@@ -146,8 +147,38 @@ def add_move():
 def trainingdata():
     if not session.get("user_id"):
         return redirect("/")
+    
+    all_moves = moves.get_moves()
+    result = []
 
-    return render_template("trainingdata.html")
+    for row in all_moves:
+        result.append(dict(row))
+
+    return render_template("trainingdata.html",moves=result)
+
+@APP.route("/addtrainingsession", methods=["GET", "POST"])
+def add_training_session():
+    # https://stackoverflow.com/questions/50146815/getting-multiple-html-fields-with-same-name-using-getlist-with-flask-in-python
+    if request.method == "POST":
+        user_id = session["user_id"]
+        session_id = trainingsessions.add_training_session(user_id)
+
+        if isinstance(session_id, int):
+            submitted_move_list = request.form.getlist("selected_moves")
+            submitted_reps_list = request.form.getlist("reps")
+            submitted_weights_list = request.form.getlist("weights")
+
+            for move, reps, weights in zip(submitted_move_list,
+            submitted_reps_list, submitted_weights_list):
+                if not trainingsessions.add_set(user_id, session_id, move, reps, weights):
+                    flash(f"Could not add set for move id {move}, aborting database operation.", "alert alert-danger")
+                    break
+            if trainingsessions.complete_session(session_id):
+                flash("Training session successfully saved!", "alert alert-success")
+        else:
+            flash("Could not create new training session.", "alert alert-danger")
+        
+    return redirect("/trainingdata")
 
 @APP.route("/createtemplate", methods=["GET", "POST"])
 def create_template():

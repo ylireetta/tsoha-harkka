@@ -4,10 +4,53 @@
 {% block title %}Training Data{% endblock %}
 
 {% block content %}
-
+<script type="text/javascript">
+    window.appConfig = {
+        all_moves: {{moves | tojson}}
+    }
+</script>
 <div class="col-8">
     <h1>Training Data</h1>
     
+    <form id="dataForm" action="/addtrainingsession" method="POST">
+        <div class="form-group col-6">
+            <table id="trainingDataTable" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th class="th-sm">Move</th>
+                        <th class="th-sm">Reps</th>
+                        <th class="th-sm">Weights</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedMoves">
+                    <tr>
+                        <td>
+                            <select name="selected_moves">
+                                {% for onemove in moves %}
+                                    <option value={{onemove.id}}>{{onemove.move_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="reps" required>
+                        </td>
+                        <td>
+                            <input type="number" name="weights" required>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-link" id="removeBtn" name="removeBtn">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group col-6">
+            <button type="button" class="btn btn-light" id="addBtn">Add</button>
+        </div>
+        <div class="form-group col-6">
+            <button type="submit" class="btn btn-primary">Save session</button>
+        </div>
+    </form>
 </div>
 
 {% endblock %}
