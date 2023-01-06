@@ -147,7 +147,7 @@ def add_move():
 def trainingdata():
     if not session.get("user_id"):
         return redirect("/")
-    
+
     all_moves = moves.get_moves()
     result = []
 
@@ -158,13 +158,18 @@ def trainingdata():
     users_sessions = trainingsessions.get_recent_sessions(session["user_id"])
     for row in users_sessions:
         sessions.append(dict(row))
-    
+
     max_weights = []
     recent_max = trainingsessions.get_recent_max_weights(session["user_id"])
     for row in recent_max:
         max_weights.append(dict(row))
 
-    return render_template("trainingdata.html", data_view_moves=result, sessions=sessions, max_weights=max_weights)
+    return render_template(
+        "trainingdata.html",
+        data_view_moves=result,
+        sessions=sessions,
+        max_weights=max_weights
+    )
 
 @APP.route("/addtrainingsession", methods=["GET", "POST"])
 def add_training_session():
@@ -181,13 +186,16 @@ def add_training_session():
             for move, reps, weights in zip(submitted_move_list,
             submitted_reps_list, submitted_weights_list):
                 if not trainingsessions.add_set(user_id, session_id, move, reps, weights):
-                    flash(f"Could not add set for move id {move}, aborting database operation.", "alert alert-danger")
+                    flash(
+                        f"Could not add set for move id {move}, aborting database operation.",
+                        "alert alert-danger"
+                    )
                     break
             if trainingsessions.complete_session(session_id):
                 flash("Training session successfully saved!", "alert alert-success")
         else:
             flash("Could not create new training session.", "alert alert-danger")
-        
+
     return redirect("/trainingdata")
 
 @APP.route("/createtemplate", methods=["GET", "POST"])

@@ -2,7 +2,8 @@ from db import DB
 
 def add_training_session(user_id):
     try:
-        sql = "INSERT INTO trainingsessions (user_id, created_at) VALUES (:user_id, NOW()) RETURNING id"
+        sql = "INSERT INTO trainingsessions (user_id, created_at) \
+            VALUES (:user_id, NOW()) RETURNING id"
         result = DB.session.execute(sql, {"user_id":user_id})
         DB.session.commit()
         return result.fetchone()["id"]
@@ -15,7 +16,13 @@ def add_set(user_id, session_id, move_id, reps, weights):
         # Change training session to completed if all goes well.
         sql = "INSERT INTO sets (user_id, session_id, move_id, reps, weights) \
             VALUES (:user_id, :session_id, :move_id, :reps, :weights)"
-        DB.session.execute(sql, {"user_id":user_id, "session_id":session_id, "move_id":move_id, "reps":reps, "weights":weights})
+        DB.session.execute(sql, {
+            "user_id":user_id,
+            "session_id":session_id,
+            "move_id":move_id,
+            "reps":reps,
+            "weights":weights
+        })
         DB.session.commit()
         return True
     except:
@@ -53,7 +60,8 @@ def get_session_data(user_id, session_id):
     return session_data
 
 def get_recent_max_weights(user_id):
-    sql = "SELECT DISTINCT ON (M.id) M.id, S.session_id, M.move_name, S.reps, S.weights, TS.created_at \
+    sql = "SELECT DISTINCT \
+        ON (M.id) M.id, S.session_id, M.move_name, S.reps, S.weights, TS.created_at \
         FROM sets S JOIN trainingsessions TS ON session_id=TS.id \
         JOIN moves M on move_id=M.id \
         WHERE TS.completed=true AND TS.user_id=:user_id \
