@@ -154,7 +154,17 @@ def trainingdata():
     for row in all_moves:
         result.append(dict(row))
 
-    return render_template("trainingdata.html",moves=result)
+    sessions = []
+    users_sessions = trainingsessions.get_recent_sessions(session["user_id"])
+    for row in users_sessions:
+        sessions.append(dict(row))
+    
+    max_weights = []
+    recent_max = trainingsessions.get_recent_max_weights(session["user_id"])
+    for row in recent_max:
+        max_weights.append(dict(row))
+
+    return render_template("trainingdata.html", data_view_moves=result, sessions=sessions, max_weights=max_weights)
 
 @APP.route("/addtrainingsession", methods=["GET", "POST"])
 def add_training_session():
@@ -218,3 +228,11 @@ def delete_move(id_):
         flash(f"Could not delete move {id_}.", "alert alert-danger")
     return redirect("/moveslibrary")
 
+@APP.route("/trainingsession/<int:id_>", methods=["GET"])
+def get_trainingsessions(id_):
+    session_data = trainingsessions.get_session_data(session["user_id"], id_)
+
+    result_sessions = []
+    for row in session_data:
+        result_sessions.append(dict(row))
+    return render_template("trainingsession.html", sessions=result_sessions)

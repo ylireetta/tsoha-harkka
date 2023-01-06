@@ -9,7 +9,7 @@
 
     <div class="accordion">
         <div class="card">
-            <div class="card-header" id="myTemplatesHeading">
+            <div class="card-header" id="myTemplatesHeader">
                 <h5 class="mb-0">
                     <button class="btn btn-link" data-toggle="collapse" data-target="#myTemplates" aria-expanded="true" aria-controls="myTemplates">
                         My Templates
@@ -17,56 +17,58 @@
                 </h5>
             </div>
 
-            <div id="myTemplates" class="collapse show" aria-labelledby="myTemplatesHeading" data-parent="#accordion">
-                <div class="card-body"><table id="trainingtemplates" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th class="th-sm">Template name</th>
-                <th class="th-sm">Moves in template</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for t_template in complete_templates %}
-            <tr>
-                <td>{{t_template[0]}}</td>
-                <td>{{t_template[1]}}</td>
-                <td>
-                    <form action="/deletetemplate/{{t_template[2]}}" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <div id="myTemplates" class="collapse show" aria-labelledby="myTemplatesHeader" data-parent="#accordion">
+                <div class="card-body">
+                    <table id="trainingtemplates" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="th-sm">Template name</th>
+                                <th class="th-sm">Moves in template</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t_template in complete_templates %}
+                            <tr>
+                                <td>{{t_template[0]}}</td>
+                                <td>{{t_template[1]}}</td>
+                                <td>
+                                    <form action="/deletetemplate/{{t_template[2]}}" method="post">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    <!-- When button is clicked, hiddendiv is shown. -->
+                    <a class="btn btn-primary" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv">Create training template</a>
+                    <div class="collapse" id="hiddendiv">
+                        <form action="/createtemplate" method="POST">
+                            <div class="form-group col-6">
+                                <label for="template_name">Template name:</label>
+                                <input type="text" class="form-control" name="template_name" id="template_name">
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="selected_moves">Select moves for template:</label>
+                                <select name="selected_moves" id="selected_moves" class="selectpicker" multiple>
+                                    {% for move in moves %}
+                                        <option value={{move.id}}>{{move.move_name}}</option>
+                                    {% endfor %}
 
-    <a class="btn btn-primary" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv">Create training template</a>
-    <div class="collapse" id="hiddendiv">
-        <form action="/createtemplate" method="POST">
-            <div class="form-group col-6">
-                <label for="template_name">Template name:</label>
-                <input type="text" class="form-control" name="template_name" id="template_name">
-            </div>
-            <div class="form-group col-6">
-                <label for="selected_moves">Select moves for template:</label>
-                <select name="selected_moves" id="selected_moves" class="selectpicker" multiple>
-                    {% for move in moves %}
-                        <option value={{move.id}}>{{move.move_name}}</option>
-                    {% endfor %}
-
-                </select>
-            </div>
-            <div class="form-group col-6">
-                <button type="submit" class="btn btn-primary">Save template</button>
-            </div>
-        </form>
-    </div>
+                                </select>
+                            </div>
+                            <div class="form-group col-6">
+                                <button type="submit" class="btn btn-primary">Save template</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-header" id="followedUsersHeading">
+            <div class="card-header" id="followedUsersHeader">
                 <h5 class="mb-0">
                     <button class="btn btn-link" data-toggle="collapse" data-target="#followedUsers" aria-expanded="false" aria-controls="followedUsers">
                         Followed Users
@@ -74,7 +76,7 @@
                 </h5>
             </div>
 
-            <div id="followedUsers" class="collapse" aria-labelledby="followedUsersHeading" data-parent="#accordion">
+            <div id="followedUsers" class="collapse" aria-labelledby="followedUsersHeader" data-parent="#accordion">
                 <div class="card-body">
                     This is where we show who we follow
                 </div>
@@ -82,7 +84,7 @@
         </div>
 
         <div class="card">
-            <div class="card-header" id="userSettingsHeading">
+            <div class="card-header" id="userSettingsHeader">
                 <h5 class="mb-0">
                     <button class="btn btn-link" data-toggle="collapse" data-target="#userSettings" aria-expanded="false" aria-controls="userSettings">
                         User Settings
@@ -90,7 +92,7 @@
                 </h5>
             </div>
 
-            <div id="userSettings" class="collapse" aria-labelledby="userSettingsHeading" data-parent="#accordion">
+            <div id="userSettings" class="collapse" aria-labelledby="userSettingsHeader" data-parent="#accordion">
                 <div class="card-body">
                     <form action="/profile" method="POST">
                         <div class="form-group col-6">

@@ -3,7 +3,7 @@ from db import DB
 def get_users_templates(user_id):
     sql = "SELECT T.id, T.template_name, M.move_name \
         FROM trainingtemplates T, moves_in_template MIT, moves M \
-            WHERE T.user_id=:user_id AND MIT.template_id = T.id AND M.id = MIT.move_id"
+        WHERE T.user_id=:user_id AND MIT.template_id = T.id AND M.id = MIT.move_id"
     result = DB.session.execute(sql, {"user_id":user_id})
     templates = result.fetchall()
     return templates
