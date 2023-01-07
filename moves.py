@@ -7,7 +7,7 @@ def get_moves():
     return moves
 
 def search_moves(query):
-    sql = "SELECT id, move_name FROM moves WHERE move_name LIKE :query"
+    sql = "SELECT id, move_name FROM moves WHERE move_name LIKE :query AND visible=true"
     result = DB.session.execute(sql, {"query": "%" + query + "%"})
     moves = result.fetchall()
     return moves
