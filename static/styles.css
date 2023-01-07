@@ -2,3 +2,14 @@
 .accordion .card {
     overflow: visible;
 }
+
+/* CSS HEX 
+--davys-grey: #555358ff;
+--platinum: #e9edebff;
+--red-salsa: #f83a44ff;
+--maximum-blue-purple: #9291f3ff;
+*/
+
+body {
+    background-color: #F6F6F4;
+}
