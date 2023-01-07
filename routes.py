@@ -149,24 +149,33 @@ def trainingdata():
         return redirect("/")
 
     all_moves = moves.get_moves()
-    result = []
+    moves_result = []
 
     for row in all_moves:
-        result.append(dict(row))
+        moves_result.append(dict(row))
 
-    sessions = []
+    users_templates = templates.get_users_templates(session["user_id"])
+    all_templates = []
+
+    for row in users_templates:
+        all_templates.append(dict(row))
+
     users_sessions = trainingsessions.get_recent_sessions(session["user_id"])
+    sessions = []
+
     for row in users_sessions:
         sessions.append(dict(row))
 
-    max_weights = []
     recent_max = trainingsessions.get_recent_max_weights(session["user_id"])
+    max_weights = []
+
     for row in recent_max:
         max_weights.append(dict(row))
 
     return render_template(
         "trainingdata.html",
-        data_view_moves=result,
+        data_view_moves=moves_result,
+        templates=all_templates,
         sessions=sessions,
         max_weights=max_weights
     )

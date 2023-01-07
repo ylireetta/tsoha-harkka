@@ -8,7 +8,8 @@
 <script type="text/javascript">
     window.appConfig = {
         all_moves: {{data_view_moves | tojson}},
-        max_weights: {{max_weights | tojson}}
+        max_weights: {{max_weights | tojson}},
+        templates: {{templates | tojson}}
     }
 </script>
 <div class="col-sm">
@@ -43,6 +44,17 @@
                         </div>
                         <div class="form-group col-6">
                             <button type="button" class="btn btn-light" id="addBtn">Add</button>
+                        </div>
+                        <div class="form-group col-6">
+                            <select id="usersTemplates">
+                                {% for template in templates %}
+                                {% if loop.first or loop.previtem.id != template.id %}
+                                    <option value="{{template.id}}">{{template.template_name}}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-light" id="selectTemplate">Select template</button>
+                            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" id="infoBtn">Why are some moves missing?</button>
                         </div>
                         <div class="form-group col-6">
                             <button type="submit" class="btn btn-primary">Save session</button>

@@ -34,6 +34,14 @@ $(document).ready(function() {
     // Get json supplied by Flask.
     var moves = appConfig.all_moves;
     var max_weights = appConfig.max_weights;
+    var templates = appConfig.templates;
+
+    var options = "";
+
+    // Loop through moves array and add select option for each element found. This is used when adding new table rows.
+    moves.forEach(element => {
+        options += "<option value='" + element.id + "'>" + element.move_name + "</option>";
+    });
 
     // When adding new table rows, use this variable as part of element id.
     var nextIndex = 1;
@@ -43,32 +51,7 @@ $(document).ready(function() {
 
     // Add rows in training data view.
     $("#addBtn").click(function() {
-        var options = "";
-
-        // Loop through moves array and add select option for each element found.
-        moves.forEach(element => {
-            options += "<option value='" + element.id + "'>" + element.move_name + "</option>";
-        });
-
-        $("#selectedMoves").append("\
-            <tr>\
-                <td>\
-                    <select class='moveSelect' name='selected_moves' id='select" + nextIndex + "'>\
-                        " + options +"\
-                    </select>\
-                </td>\
-                <td>\
-                    <input type='number' name='reps' id='reps" + nextIndex +"' min='1' required>\
-                </td>\
-                <td>\
-                    <input type='number' name='weights' id='weights" + nextIndex + "' min='0' step=0.25 required>\
-                </td>\
-                <td>\
-                <button type='button' class='btn btn-link' name='removeBtn'>Remove</button>\
-                </td>\
-            </tr>");
-
-            nextIndex++;
+        addTableRow();
     });
 
     $("body").on("change", ".moveSelect", function() {
@@ -80,8 +63,34 @@ $(document).ready(function() {
         setTableDefaultInput(selectedMoveId, selectionIdNumber, parentRow);
     });
 
-    $("#trainingDataTable").on('click', 'button[name=removeBtn]', function() {
-        $(this).closest('tr').remove();
+    $("#trainingDataTable").on("click", "button[name=removeBtn]", function() {
+        $(this).closest("tr").remove();
+    });
+
+    $("#infoBtn").tooltip().attr("title", "Moves that have been removed from the database will not be added to new training sessions.");
+
+    $("#selectTemplate").click(function() {
+        // When this button is clicked, use the selected template as base for workout.
+        // I.e., add each move in template as new row to data table.
+        // Clear previous rows, if any.
+        $("#selectedMoves").find("tr").remove();
+        
+        var selectedTemplateId = parseInt($("#usersTemplates").val());
+
+        // One template is basically a collection of move rows, connected by a common template id.
+        var selectedTemplateRows = templates.filter(function(item) {
+            return parseInt(item.id) === selectedTemplateId;
+        });
+
+        // Add however many table rows are needed and adjust move selections.
+        selectedTemplateRows.forEach(row => {
+            if (row.visible) {
+                var indexToAdd = nextIndex;
+                addTableRow();
+                $("#select" + indexToAdd).val(row.move_id).change();
+            }
+        });
+
     });
 
     function setTableDefaultInput(selectedMoveId, selectionIdNumber, parentRow) {
@@ -110,5 +119,27 @@ $(document).ready(function() {
 
     function parseNumberFromString(str) {
         return parseInt(str.replace( /^\D+/g, ''));
+    };
+
+    function addTableRow() {
+        $("#selectedMoves").append("\
+            <tr>\
+                <td>\
+                    <select class='moveSelect' name='selected_moves' id='select" + nextIndex + "'>\
+                        " + options +"\
+                    </select>\
+                </td>\
+                <td>\
+                    <input type='number' name='reps' id='reps" + nextIndex +"' min='1' required>\
+                </td>\
+                <td>\
+                    <input type='number' name='weights' id='weights" + nextIndex + "' min='0' step=0.25 required>\
+                </td>\
+                <td>\
+                <button type='button' class='btn btn-link' name='removeBtn'>Remove</button>\
+                </td>\
+            </tr>");
+
+            nextIndex++;
     };
 });
