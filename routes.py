@@ -253,3 +253,9 @@ def get_trainingsessions(id_):
     for row in session_data:
         result_sessions.append(dict(row))
     return render_template("trainingsession.html", sessions=result_sessions)
+
+@APP.route("/userdata", methods=["GET"])
+def userdata():
+    userlist = users.get_userlist_with_followinfo(session["user_id"])
+    
+    return render_template("userdata.html", users=userlist)

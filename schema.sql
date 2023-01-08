@@ -38,3 +38,9 @@ CREATE TABLE sets (
     reps INTEGER,
     weights REAL
 );
+
+CREATE TABLE followedusers (
+    id SERIAL PRIMARY KEY,
+    follower_id INTEGER REFERENCES users,
+    followed_user_id INTEGER REFERENCES users
+);
