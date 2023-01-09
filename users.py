@@ -46,6 +46,21 @@ def get_allow_follow(username):
     result = DB.session.execute(sql, {"username": username})
     return result.fetchone()
 
+def follow_unfollow(follower_id, followed_user_id, follow):
+    try:
+        if follow:
+            sql = "INSERT INTO followedusers (follower_id, followed_user_id) \
+                VALUES (:follower_id, :followed_user_id)"
+        else:
+            sql = "DELETE FROM followedusers \
+                WHERE follower_id=:follower_id AND followed_user_id=:followed_user_id"
+        
+        DB.session.execute(sql, {"follower_id":follower_id, "followed_user_id":followed_user_id})
+        DB.session.commit()
+        return True
+    except:
+        return False
+
 def get_userlist_with_followinfo(user_id):
     # Returns table w/ columns that show all users in the system as well as their possible followers.
     sql = "SELECT U.id, U.username, U.allow_follow, F.followed_user_id, F.follower_id \

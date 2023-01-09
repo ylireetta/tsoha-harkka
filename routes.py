@@ -259,3 +259,15 @@ def userdata():
     userlist = users.get_userlist_with_followinfo(session["user_id"])
     
     return render_template("userdata.html", users=userlist)
+
+@APP.route("/followunfollow/<int:id_>", methods=["GET", "POST"])
+def follow_unfollow(id_):
+    if request.method == "POST":
+        follow = "follow" in request.form
+
+        if users.follow_unfollow(session["user_id"], id_, follow):
+            flash(f"Follow information successfully updated for user {id_}.", "alert alert-success")
+        else:
+            flash(f"Failed to update follow information for user {id_}.", "alert alert-danger")
+
+    return redirect("/userdata")

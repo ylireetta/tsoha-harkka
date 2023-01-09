@@ -21,13 +21,19 @@
                     {% else %}
                         <td>
                             {% if user.follower_id != session.user_id and user.allow_follow %}
-                            <button type="button" class="btn btn-link">
-                                Follow
-                            </button>
+                            <form action="/followunfollow/{{user.id}}" method="POST">
+
+                                <button type="submit" class="btn btn-link" name="follow">
+                                    Follow
+                                </button>
+                            </form>
                             {% elif user.follower_id == session.user_id and user.allow_follow %}
-                            <button type="button" class="btn btn-link">
-                                Unfollow
-                            </button>
+                            <form action="/followunfollow/{{user.id}}" method="POST">
+
+                                <button type="submit" class="btn btn-link" name="unfollow">
+                                    Unfollow
+                                </button>
+                            </form>
                             {% elif not user.allow_follow %}
                                 Following disabled
                             {%endif%}
