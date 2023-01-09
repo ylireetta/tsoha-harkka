@@ -7,7 +7,11 @@ import trainingsessions
 
 @APP.route("/")
 def index():
-    return render_template("index.html")
+    followed_sessions = None
+    if session.get("user_id"):
+        followed_sessions = trainingsessions.get_followed_sessions(session["user_id"])
+
+    return render_template("index.html", followed_sessions=followed_sessions)
 
 @APP.route("/register", methods=["GET", "POST"])
 def register():
@@ -43,7 +47,7 @@ def login():
         if not users.login(username, password):
             flash("Login unsuccessful - check username and password.", "alert alert-danger")
 
-    return render_template("index.html")
+    return redirect("/")
 
 @APP.route("/logout")
 def logout():

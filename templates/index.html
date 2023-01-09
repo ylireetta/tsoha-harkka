@@ -5,22 +5,49 @@
 {% block content %}
 
 <div class="col-8">
-{% if not session.username %}
-<form action="/login" method="POST">
-    <p>
-        Username:<br>
-        <input type="text" name="username">
-    </p>
-    <p>
-        Password:<br>
-        <input type="password" name="password">
-    </p>
-    <input type="submit" value="Log in">
-</form>
-<a href="/register">Register</a>
-{% else %}
-<h1>Welcome, {{session.username}}!</h1>
-{% endif %}
+    {% if not session.username %}
+        <form action="/login" method="POST">
+            <p>
+                Username:<br>
+                <input type="text" name="username">
+            </p>
+            <p>
+                Password:<br>
+                <input type="password" name="password">
+            </p>
+            <input type="submit" value="Log in">
+        </form>
+        <a href="/register">Register</a>
+    {% else %}
+        <h1>Welcome, {{session.username}}!</h1>
+        <div class="accordion">
+        {% for followed_session in followed_sessions %}
+            {% if loop.first or loop.previtem.ses_id != followed_session.ses_id %}
+                <div class="card">
+                    <div class="card-header" id="sessionheader-{{followed_session.ses_id}}">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#session-{{followed_session.ses_id}}" aria-expanded="true" aria-controls="session-{{followed_session.ses_id}}">
+                                {{followed_session.username}}
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="session-{{followed_session.ses_id}}" class="collapse" aria-labelledby="sessionheader-{{followed_session.ses_id}}" data-parent="#accordion">
+                        <div class="card-body">
+                            <ul>
+                                {% for row in followed_sessions %}
+                                    {% if row.ses_id == followed_session.ses_id %}
+                                        <li>{{row.reps}} reps of {{row.move_name}} with {{row.weights}} kg</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {%endif%}
+        {% endfor %}
+        </div>
+    {% endif %}
 </div>
 
 

@@ -45,8 +45,7 @@ def get_recent_sessions(user_id):
         JOIN moves M ON move_id=M.id \
         WHERE TS.completed=true AND TS.user_id=:user_id"
     result = DB.session.execute(sql, {"user_id":user_id})
-    recent_sessions = result.fetchall()
-    return recent_sessions
+    return result.fetchall()
 
 def get_session_data(user_id, session_id):
     sql = "SELECT M.id AS move_id, M.move_name, S.reps, S.weights, TS.created_at \
@@ -56,8 +55,7 @@ def get_session_data(user_id, session_id):
         WHERE TS.completed=true AND TS.user_id=:user_id AND TS.id=:session_id \
         ORDER BY M.id"
     result = DB.session.execute(sql, {"user_id":user_id, "session_id":session_id})
-    session_data = result.fetchall()
-    return session_data
+    return result.fetchall()
 
 def get_recent_max_weights(user_id):
     sql = "SELECT DISTINCT \
@@ -66,7 +64,15 @@ def get_recent_max_weights(user_id):
         JOIN moves M on move_id=M.id \
         WHERE TS.completed=true AND TS.user_id=:user_id \
         ORDER BY M.id, S.weights DESC, TS.created_at DESC"
-
     result = DB.session.execute(sql, {"user_id":user_id})
-    rows = result.fetchall()
-    return rows
+    return result.fetchall()
+
+def get_followed_sessions(user_id):
+    # Get training sessions added by users who current user follows.
+    sql = "SELECT U.id AS user_id, U.username, S.session_id AS ses_id, S.reps, S.weights, M.move_name \
+        FROM users U, sets S, trainingsessions TS, moves M \
+        WHERE TS.completed=true AND U.id=S.user_id AND TS.id=S.session_id AND M.id=S.move_id AND TS.user_id \
+        IN (SELECT followed_user_id FROM followedusers WHERE follower_id=:user_id)"
+    result = DB.session.execute(sql, {"user_id":user_id})
+    return result.fetchall()
+
