@@ -8,9 +8,10 @@ def get_moves():
 
 def search_moves(query, **kwargs):
     user_id = kwargs.get("user_id", None)
-    
+
     if user_id:
-        sql = "SELECT id, move_name FROM moves WHERE move_name LIKE :query AND added_by=:user_id AND visible=true"
+        sql = "SELECT id, move_name FROM moves \
+            WHERE move_name LIKE :query AND added_by=:user_id AND visible=true"
         result = DB.session.execute(sql, {"query": "%" + query + "%", "user_id":user_id})
     else:
         sql = "SELECT id, move_name FROM moves WHERE move_name LIKE :query AND visible=true"

@@ -264,7 +264,7 @@ def get_trainingsessions(id_):
 @APP.route("/userdata", methods=["GET"])
 def userdata():
     userlist = users.get_userlist_with_followinfo(session["user_id"])
-    
+
     return render_template("userdata.html", users=userlist)
 
 @APP.route("/followunfollow/<int:id_>", methods=["GET", "POST"])

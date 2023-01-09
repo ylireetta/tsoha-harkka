@@ -54,7 +54,7 @@ def follow_unfollow(follower_id, followed_user_id, follow):
         else:
             sql = "DELETE FROM followedusers \
                 WHERE follower_id=:follower_id AND followed_user_id=:followed_user_id"
-        
+
         DB.session.execute(sql, {"follower_id":follower_id, "followed_user_id":followed_user_id})
         DB.session.commit()
         return True
@@ -62,7 +62,6 @@ def follow_unfollow(follower_id, followed_user_id, follow):
         return False
 
 def get_userlist_with_followinfo(user_id):
-    # Returns table w/ columns that show all users in the system as well as their possible followers.
     sql = "SELECT U.id, U.username, U.allow_follow, F.followed_user_id, F.follower_id \
         FROM users U\
         LEFT JOIN \

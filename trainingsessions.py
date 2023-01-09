@@ -69,10 +69,13 @@ def get_recent_max_weights(user_id):
 
 def get_followed_sessions(user_id):
     # Get training sessions added by users who current user follows.
-    sql = "SELECT U.id AS user_id, U.username, S.session_id AS ses_id, S.reps, S.weights, M.move_name \
+    sql = "SELECT \
+            U.id AS user_id, U.username, \
+            S.session_id AS ses_id, S.reps, S.weights, \
+            M.move_name \
         FROM users U, sets S, trainingsessions TS, moves M \
-        WHERE TS.completed=true AND U.id=S.user_id AND TS.id=S.session_id AND M.id=S.move_id AND TS.user_id \
-        IN (SELECT followed_user_id FROM followedusers WHERE follower_id=:user_id)"
+        WHERE U.id=S.user_id AND TS.id=S.session_id AND M.id=S.move_id AND TS.completed=true \
+        AND TS.user_id IN \
+            (SELECT followed_user_id FROM followedusers WHERE follower_id=:user_id)"
     result = DB.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
-
