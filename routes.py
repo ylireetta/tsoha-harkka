@@ -56,11 +56,14 @@ def moveslibrary():
     if not session.get("user_id"):
         return redirect("/")
 
-    render_moves = ""
+    render_moves = None
 
     if "query" in request.args:
         query = request.args["query"]
-        render_moves = moves.search_moves(query)
+        if "showmineonly" in request.args:
+            render_moves = moves.search_moves(query, user_id=session["user_id"])
+        else:
+            render_moves = moves.search_moves(query)
     else:
         render_moves = moves.get_moves()
 
