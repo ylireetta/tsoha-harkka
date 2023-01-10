@@ -29,6 +29,18 @@
                             <button class="btn btn-link" data-toggle="collapse" data-target="#session-{{followed_session.ses_id}}" aria-expanded="true" aria-controls="session-{{followed_session.ses_id}}">
                                 {{followed_session.username}}
                             </button>
+                            <form action="/like/{{followed_session.ses_id}}" method="POST">
+                                {% if followed_session.liked_by_current_user %}
+                                    <button type="submit" class="btn btn-link" name="removelike">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-link" name="like">
+                                        <i class="bi bi-heart"></i>
+                                    </button>
+                                {% endif %}
+                                {{followed_session.likes}}
+                            </form>
                         </h5>
                     </div>
 

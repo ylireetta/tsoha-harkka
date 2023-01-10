@@ -44,3 +44,11 @@ CREATE TABLE followedusers (
     follower_id INTEGER REFERENCES users,
     followed_user_id INTEGER REFERENCES users
 );
+
+CREATE TABLE actions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    target_id INTEGER REFERENCES trainingsessions,
+    actiontype TEXT,
+    content TEXT
+);

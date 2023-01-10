@@ -13,3 +13,12 @@
 body {
     background-color: #F6F6F4;
 }
+
+/* Display index page card header and like icon on the same line. */
+.card-header button, form {
+    display: inline;
+}
+
+.card-header form {
+    float: right;
+}

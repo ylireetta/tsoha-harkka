@@ -69,10 +69,15 @@ def get_recent_max_weights(user_id):
 
 def get_followed_sessions(user_id):
     # Get training sessions added by users who current user follows.
+    # Include also info about likes.
     sql = "SELECT \
             U.id AS user_id, U.username, \
             S.session_id AS ses_id, S.reps, S.weights, \
-            M.move_name \
+            M.move_name, \
+            CASE WHEN :user_id IN \
+                (SELECT user_id FROM actions WHERE target_id=S.session_id) \
+            THEN  true ELSE false END AS liked_by_current_user, \
+            (SELECT COUNT(*) FROM actions WHERE target_id=S.session_id) AS likes \
         FROM users U, sets S, trainingsessions TS, moves M \
         WHERE U.id=S.user_id AND TS.id=S.session_id AND M.id=S.move_id AND TS.completed=true \
         AND TS.user_id IN \

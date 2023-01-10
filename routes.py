@@ -4,14 +4,21 @@ import users
 import moves
 import templates
 import trainingsessions
+import likesandcomments
 
 @APP.route("/")
 def index():
     followed_sessions = None
+    liked_by_user = None
     if session.get("user_id"):
         followed_sessions = trainingsessions.get_followed_sessions(session["user_id"])
+        liked_by_user = likesandcomments.get_likes_by_user(session["user_id"])
 
-    return render_template("index.html", followed_sessions=followed_sessions)
+    return render_template(
+        "index.html", 
+        followed_sessions=followed_sessions, 
+        liked_by_user=liked_by_user
+    )
 
 @APP.route("/register", methods=["GET", "POST"])
 def register():
@@ -278,3 +285,14 @@ def follow_unfollow(id_):
             flash(f"Failed to update follow information for user {id_}.", "alert alert-danger")
 
     return redirect("/userdata")
+
+@APP.route("/like/<int:id_>", methods=["POST"])
+def toggle_like(id_):
+    like = "like" in request.form
+
+    if like:
+        likesandcomments.like(id_, session["user_id"])
+    else:
+        likesandcomments.remove_like(id_, session["user_id"])
+    
+    return redirect("/")
