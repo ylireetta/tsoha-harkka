@@ -77,7 +77,7 @@ def get_followed_sessions(user_id):
             CASE WHEN :user_id IN \
                 (SELECT user_id FROM actions WHERE target_id=S.session_id) \
             THEN  true ELSE false END AS liked_by_current_user, \
-            (SELECT COUNT(*) FROM actions WHERE target_id=S.session_id) AS likes \
+            (SELECT COUNT(*) FROM actions WHERE target_id=S.session_id AND actiontype='like') AS likes \
         FROM users U, sets S, trainingsessions TS, moves M \
         WHERE U.id=S.user_id AND TS.id=S.session_id AND M.id=S.move_id AND TS.completed=true \
         AND TS.user_id IN \
