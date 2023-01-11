@@ -48,12 +48,14 @@ def get_recent_sessions(user_id):
     return result.fetchall()
 
 def get_session_data(user_id, session_id):
-    sql = "SELECT M.id AS move_id, M.move_name, S.reps, S.weights, TS.created_at \
+    sql = "SELECT U.username, M.id AS move_id, M.move_name, S.reps, S.weights, TS.created_at \
         FROM sets S \
+        LEFT JOIN users U ON U.id=S.user_id \
         LEFT JOIN trainingsessions TS ON TS.id=S.session_id \
         LEFT JOIN moves M ON S.move_id=M.id \
-        WHERE TS.completed=true AND TS.user_id=:user_id AND TS.id=:session_id \
+        WHERE TS.completed=true AND TS.id=:session_id \
         ORDER BY M.id"
+        # Add condition TS.user_id=:user_id if we need to restrict who can see individual session pages (only session owner is then able to view records).
     result = DB.session.execute(sql, {"user_id":user_id, "session_id":session_id})
     return result.fetchall()
 
@@ -76,7 +78,7 @@ def get_followed_sessions(user_id):
             M.move_name, \
             CASE WHEN :user_id IN \
                 (SELECT user_id FROM actions WHERE target_id=S.session_id) \
-            THEN  true ELSE false END AS liked_by_current_user, \
+            THEN true ELSE false END AS liked_by_current_user, \
             (SELECT COUNT(*) FROM actions WHERE target_id=S.session_id AND actiontype='like') AS likes \
         FROM users U, sets S, trainingsessions TS, moves M \
         WHERE U.id=S.user_id AND TS.id=S.session_id AND M.id=S.move_id AND TS.completed=true \

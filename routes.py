@@ -263,10 +263,17 @@ def delete_move(id_):
 def get_trainingsessions(id_):
     session_data = trainingsessions.get_session_data(session["user_id"], id_)
 
-    result_sessions = []
-    for row in session_data:
-        result_sessions.append(dict(row))
-    return render_template("trainingsession.html", sessions=result_sessions)
+    if session_data:
+        session_comments = likesandcomments.get_comments(id_)
+        main_info = {
+            "session_id": id_,
+            "username": session_data[0].username,
+            "created_at": session_data[0].created_at
+        }
+        return render_template("trainingsession.html", sessions=session_data, comments=session_comments, main_info=main_info)
+    else:
+        flash(f"No session with id {id_} found.", "alert alert-danger")
+        return redirect("/")
 
 @APP.route("/userdata", methods=["GET"])
 def userdata():
@@ -296,3 +303,24 @@ def toggle_like(id_):
         likesandcomments.remove_like(id_, session["user_id"])
     
     return redirect("/")
+
+@APP.route("/addcomment/<int:id_>", methods=["POST"])
+def add_comment(id_):
+    if request.method == "POST":
+        content = request.form["commenttext"]
+
+        if likesandcomments.add_comment(session["user_id"], id_, content):
+            flash("Comment added!", "alert alert-success")
+        else:
+            flash("Could not add new comment.", "alert alert-danger")
+
+    return redirect(f"/trainingsession/{id_}")
+
+@APP.route("/removecomment/<int:id_>", methods=["POST"])
+def remove_comment(id_):
+    if likesandcomments.remove_comment(id_, session["user_id"]):
+        flash("You deleted your comment successfully!", "alert alert-success")
+    else:
+        flash("Something went wrong - couldn't delete comment.", "alert alert-danger")
+
+    return redirect(request.referrer)

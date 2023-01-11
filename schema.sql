@@ -50,5 +50,6 @@ CREATE TABLE actions (
     user_id INTEGER REFERENCES users,
     target_id INTEGER REFERENCES trainingsessions,
     actiontype TEXT,
-    content TEXT
+    content TEXT,
+    actiondate TIMESTAMP
 );

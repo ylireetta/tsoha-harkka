@@ -22,3 +22,7 @@ body {
 .card-header form {
     float: right;
 }
+
+p form {
+    display: inline;
+}

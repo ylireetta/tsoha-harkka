@@ -4,10 +4,52 @@
 
 {% block content %}
 <div class="col-sm">
+    <h1>Workout by {{main_info.username}} on {{main_info.created_at}}</h1>
     <ul>
         {% for row in sessions %}
-        <li>{{row}}</li>
+        <li>{{row.reps}} reps of {{row.move_name}} with {{row.weights}} kg</li>
         {% endfor %}
+
+
     </ul>
+
+
+    <h2>
+        Comments <a class="btn btn-link" id="show-hide-comments" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv"><i class="bi bi-chat-right"></i></a>
+    </h2>
+    
+
+    <div class="collapse" id="hiddendiv">
+        <div class="col-8">
+            {% for row in comments %}
+                {% if row.user_id == session.user_id %}
+                    <p>
+                        <form action="/removecomment/{{row.id}}" method="POST">
+                            {{row.username}} on {{row.actiondate}} <button type="submit" class="btn btn-link"><i class="bi bi-trash"></i></button>
+                            <br>
+                            {{row.content}}
+                        </form>
+                    </p>
+                {% else %}
+                    <p>
+                        {{row.username}} on {{row.actiondate}}
+                        <br>
+                        {{row.content}}
+                    </p>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <hr>
+        <form action="/addcomment/{{main_info.session_id}}" method="POST">
+            <div class="form-group col-6">
+                <label for="commentcontent">Leave a comment for {{sessions[0].username}}!</label>
+                <textarea class="form-control" name="commenttext" id="commentcontent" rows="3" required></textarea>
+            </div>
+            <div class="form-group col-6">
+                <button type="submit" class="btn btn-primary">Add comment</button>
+            </div>
+        </form>
+
+    </div>
 </div>
 {% endblock %}
