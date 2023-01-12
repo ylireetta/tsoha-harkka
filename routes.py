@@ -127,7 +127,7 @@ def profile():
                 complete_templates.append((row["template_name"], moves_string, row["id"]))
 
     # Get current value from database.
-    allow_follow_value = bool(users.get_allow_follow(session["username"])[0])
+    allow_follow_value = bool(users.get_allow_follow(session["username"]))
 
     if request.method == "POST" and "allow_follow" in request.form:
         success = users.update_user(session["username"], request.form["allow_follow"])
@@ -148,21 +148,18 @@ def profile():
 
 @APP.route("/addmove", methods=["GET", "POST"])
 def add_move():
-    # If a user types in url directly, redirect.
-    if request.method == "GET":
-        return redirect("/moveslibrary")
+    if request.method == "POST":
+        move_name = request.form["movename"]
+        user_id = session["user_id"]
 
-    move_name = request.form["movename"]
-    user_id = session["user_id"]
+        if not moves.add_move(move_name, user_id):
+            flash(f"Could not add new move {move_name}.", "alert alert-danger")
+            return redirect("/moveslibrary")
 
-    if not moves.add_move(move_name, user_id):
-        flash(f"Could not add new move {move_name}.", "alert alert-danger")
-        return redirect("/moveslibrary")
-
-    flash(f"New move {move_name} successfully added!", "alert alert-success")
+        flash(f"New move {move_name} successfully added!", "alert alert-success")
     return redirect("/moveslibrary")
 
-@APP.route("/trainingdata", methods=["GET", "POST"])
+@APP.route("/trainingdata", methods=["GET"])
 def trainingdata():
     if not session.get("user_id"):
         return redirect("/")
@@ -225,40 +222,47 @@ def add_training_session():
 
 @APP.route("/createtemplate", methods=["GET", "POST"])
 def create_template():
-    # If a user types in url directly, redirect.
-    if request.method == "GET":
-        return redirect("/profile")
+    if request.method == "POST":
+        if len(request.form.getlist("selected_moves")) == 0:
+            flash("Please select moves when creating a training template.", "alert alert-danger")
+            return redirect("/profile")
 
-    if len(request.form.getlist("selected_moves")) == 0:
-        flash("Please select moves when creating a training template.", "alert alert-danger")
-        return redirect("/profile")
-
-    creation_ret = templates.create_template(session["user_id"], request.form["template_name"])
-    if isinstance(creation_ret, int):
-        # Get selected move ids as list.
-        selected_moves = request.form.getlist("selected_moves")
-        for move_id in selected_moves:
-            templates.add_to_reference_table(creation_ret, int(move_id))
-        flash("Template saved successfully!", "alert alert-success")
-    else:
-        flash("Could not create new template.", "alert alert-danger")
+        creation_ret = templates.create_template(session["user_id"], request.form["template_name"])
+        if isinstance(creation_ret, int):
+            # Get selected move ids as list.
+            selected_moves = request.form.getlist("selected_moves")
+            for move_id in selected_moves:
+                templates.add_to_reference_table(creation_ret, int(move_id))
+            flash("Template saved successfully!", "alert alert-success")
+        else:
+            flash("Could not create new template.", "alert alert-danger")
 
     return redirect("/profile")
 
 @APP.route("/deletetemplate/<int:id_>", methods=["GET", "POST"])
 def delete_template(id_):
-    if templates.delete_template(id_):
-        flash(f"Template {id_} deleted!", "alert alert-success")
-    else:
-        flash(f"Could not delete template {id_}.", "alert alert-danger")
+    if request.method == "POST":
+        if templates.get_template_owner(id_) == session["user_id"]:    
+            if templates.delete_template(id_):
+                flash(f"Template {id_} deleted!", "alert alert-success")
+            else:
+                flash(f"Could not delete template {id_}.", "alert alert-danger")
+        else:
+            flash("You can only delete your own training templates.", "alert alert-danger")
+
     return redirect("/profile")
 
 @APP.route("/deletemove/<int:id_>", methods=["GET", "POST"])
 def delete_move(id_):
-    if moves.delete_move(id_):
-        flash(f"Move {id_} deleted!", "alert alert-success")
-    else:
-        flash(f"Could not delete move {id_}.", "alert alert-danger")
+    if request.method == "POST":
+        if moves.get_move_owner(id_) == session["user_id"]:
+            if moves.delete_move(id_):
+                flash(f"Move {id_} deleted!", "alert alert-success")
+            else:
+                flash(f"Could not delete move {id_}.", "alert alert-danger")
+        else:
+            flash("You can only delete moves you have added yourself.", "alert alert-danger")
+
     return redirect("/moveslibrary")
 
 @APP.route("/trainingsession/<int:id_>", methods=["GET"])
@@ -295,20 +299,21 @@ def follow_unfollow(id_):
 
     return redirect("/userdata")
 
-@APP.route("/like/<int:id_>", methods=["POST"])
+@APP.route("/like/<int:id_>", methods=["GET", "POST"])
 def toggle_like(id_):
-    like = "like" in request.form
+    if request.method == "POST":
+        like = "like" in request.form
 
-    if like:
-        like_id = likesandcomments.like(id_, session["user_id"])
-        if isinstance(like_id, int) and trainingsessions.get_session_owner(id_) != session["user_id"]:
-            notifications.create_notification(like_id)
-    else:
-        likesandcomments.remove_like(id_, session["user_id"])
+        if like:
+            like_id = likesandcomments.like(id_, session["user_id"])
+            if isinstance(like_id, int) and trainingsessions.get_session_owner(id_) != session["user_id"]:
+                notifications.create_notification(like_id)
+        else:
+            likesandcomments.remove_like(id_, session["user_id"])
     
     return redirect("/")
 
-@APP.route("/addcomment/<int:id_>", methods=["POST"])
+@APP.route("/addcomment/<int:id_>", methods=["GET", "POST"])
 def add_comment(id_):
     if request.method == "POST":
         content = request.form["commenttext"]
@@ -323,16 +328,27 @@ def add_comment(id_):
 
     return redirect(f"/trainingsession/{id_}")
 
-@APP.route("/removecomment/<int:id_>", methods=["POST"])
+@APP.route("/removecomment/<int:id_>", methods=["GET", "POST"])
 def remove_comment(id_):
-    if likesandcomments.remove_comment(id_, session["user_id"]):
-        flash("You deleted your comment successfully!", "alert alert-success")
-    else:
-        flash("Something went wrong - couldn't delete comment.", "alert alert-danger")
+    related_session_id = likesandcomments.get_related_session(id_)
 
-    return redirect(request.referrer)
+    if request.method == "POST":
+        if likesandcomments.get_action_owner(id_) == session["user_id"]:
+            if likesandcomments.remove_comment(id_, session["user_id"]):
+                flash("You deleted your comment successfully!", "alert alert-success")
+            else:
+                flash("Something went wrong - couldn't delete comment.", "alert alert-danger")
+        else:
+            flash("You can only delete your own comments.", "alert alert-danger")
 
-@APP.route("/markasseen/<int:id_>", methods=["POST"])
+    return redirect(f"/trainingsession/{related_session_id}")
+
+@APP.route("/markasseen/<int:id_>", methods=["GET", "POST"])
 def mark_as_seen(id_):
-    notifications.mark_as_seen(id_)
+    if request.method == "POST":
+        if notifications.get_notiftarget_owner(id_) == session["user_id"]:
+            notifications.mark_as_seen(id_)
+        else:
+            flash("You can only mark notifications as seen if they are related to your own training sessions.", "alert alert-danger")
+
     return redirect("/")

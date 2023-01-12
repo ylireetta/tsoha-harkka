@@ -24,3 +24,9 @@ def get_users_notifications(user_id):
         WHERE N.seen=false AND N.action_id=A.id AND U.id=A.user_id AND TS.id=A.target_id AND TS.user_id=:user_id"
     result = DB.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
+
+def get_notiftarget_owner(notification_id):
+    sql = "SELECT TS.user_id FROM actions A, notifications N, trainingsessions TS \
+        WHERE A.id=N.action_id AND A.target_id=TS.id AND N.id=:notification_id"
+    result = DB.session.execute(sql, {"notification_id":notification_id})
+    return result.fetchone()["user_id"]

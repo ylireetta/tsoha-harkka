@@ -46,3 +46,13 @@ def get_comments(target_id):
     sql = "SELECT A.id, A.user_id, U.username, A.content, A.actiondate FROM actions A, users U WHERE A.target_id=:target_id AND U.id=A.user_id AND A.actiontype='comment'"
     result = DB.session.execute(sql, {"target_id":target_id})
     return result.fetchall()
+
+def get_action_owner(action_id):
+    sql = "SELECT user_id FROM actions WHERE id=:action_id"
+    result = DB.session.execute(sql, {"action_id":action_id})
+    return result.fetchone()["user_id"]
+
+def get_related_session(action_id):
+    sql = "SELECT target_id FROM actions WHERE id=:action_id"
+    result = DB.session.execute(sql, {"action_id":action_id})
+    return result.fetchone()["target_id"]

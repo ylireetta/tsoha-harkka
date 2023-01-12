@@ -44,7 +44,7 @@ def update_user(username, allow_follow):
 def get_allow_follow(username):
     sql = "SELECT allow_follow FROM users WHERE username=:username"
     result = DB.session.execute(sql, {"username": username})
-    return result.fetchone()
+    return result.fetchone()["allow_follow"]
 
 def follow_unfollow(follower_id, followed_user_id, follow):
     try:

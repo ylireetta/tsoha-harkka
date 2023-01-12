@@ -49,9 +49,11 @@
             <tr>
                 <td>{{move.move_name}}</td>
                 <td>
+                    {% if move.added_by == session.user_id %}
                     <form action="/deletemove/{{move.id}}" method="post">
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

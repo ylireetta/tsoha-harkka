@@ -38,3 +38,7 @@ def delete_template(template_id):
     except:
         return False
     
+def get_template_owner(template_id):
+    sql = "SELECT user_id FROM trainingtemplates WHERE id=:template_id"
+    result = DB.session.execute(sql, {"template_id":template_id})
+    return result.fetchone()["user_id"]
