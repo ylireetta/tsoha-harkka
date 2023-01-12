@@ -19,8 +19,8 @@ def index():
         users_notifs = notifications.get_users_notifications(session["user_id"])
 
     return render_template(
-        "index.html", 
-        followed_sessions=followed_sessions, 
+        "index.html",
+        followed_sessions=followed_sessions,
         liked_by_user=liked_by_user,
         users_notifs=users_notifs
     )
@@ -166,7 +166,8 @@ def trainingdata():
 
     users_sessions = trainingsessions.get_recent_sessions(session["user_id"])
 
-    # Moves, templates and max weights need to be handled differently, since they need to be JSON serializable.
+    # Moves, templates and max weights need to be handled differently,
+    # since they need to be JSON serializable.
     all_moves = moves.get_moves()
     moves_result = []
 
@@ -242,7 +243,7 @@ def create_template():
 @APP.route("/deletetemplate/<int:id_>", methods=["GET", "POST"])
 def delete_template(id_):
     if request.method == "POST":
-        if templates.get_template_owner(id_) == session["user_id"]:    
+        if templates.get_template_owner(id_) == session["user_id"]:
             if templates.delete_template(id_):
                 flash(f"Template {id_} deleted!", "alert alert-success")
             else:
@@ -276,10 +277,15 @@ def get_trainingsessions(id_):
             "username": session_data[0].username,
             "created_at": session_data[0].created_at
         }
-        return render_template("trainingsession.html", sessions=session_data, comments=session_comments, main_info=main_info)
-    else:
-        flash(f"No session with id {id_} found.", "alert alert-danger")
-        return redirect("/")
+        return render_template(
+            "trainingsession.html",
+            sessions=session_data,
+            comments=session_comments,
+            main_info=main_info
+        )
+
+    flash(f"No session with id {id_} found.", "alert alert-danger")
+    return redirect("/")
 
 @APP.route("/userdata", methods=["GET"])
 def userdata():
@@ -306,11 +312,12 @@ def toggle_like(id_):
 
         if like:
             like_id = likesandcomments.like(id_, session["user_id"])
-            if isinstance(like_id, int) and trainingsessions.get_session_owner(id_) != session["user_id"]:
+            session_owner = trainingsessions.get_session_owner(id_)
+            if isinstance(like_id, int) and session_owner != session["user_id"]:
                 notifications.create_notification(like_id)
         else:
             likesandcomments.remove_like(id_, session["user_id"])
-    
+
     return redirect("/")
 
 @APP.route("/addcomment/<int:id_>", methods=["GET", "POST"])
@@ -349,6 +356,8 @@ def mark_as_seen(id_):
         if notifications.get_notiftarget_owner(id_) == session["user_id"]:
             notifications.mark_as_seen(id_)
         else:
-            flash("You can only mark notifications as seen if they are related to your own training sessions.", "alert alert-danger")
+            flash("You can only mark notifications as seen \
+                if they are related to your own training sessions.",
+                "alert alert-danger")
 
     return redirect("/")

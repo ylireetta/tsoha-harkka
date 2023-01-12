@@ -55,7 +55,9 @@ def get_session_data(user_id, session_id):
         LEFT JOIN moves M ON S.move_id=M.id \
         WHERE TS.completed=true AND TS.id=:session_id \
         ORDER BY M.id"
-        # Add condition TS.user_id=:user_id if we need to restrict who can see individual session pages (only session owner is then able to view records).
+        # Add condition TS.user_id=:user_id
+        # if we need to restrict who can see individual session pages
+        # (only session owner is then able to view records).
     result = DB.session.execute(sql, {"user_id":user_id, "session_id":session_id})
     return result.fetchall()
 
