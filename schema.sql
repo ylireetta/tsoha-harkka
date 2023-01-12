@@ -53,3 +53,10 @@ CREATE TABLE actions (
     content TEXT,
     actiondate TIMESTAMP
 );
+
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    action_id INTEGER REFERENCES actions ON DELETE CASCADE,
+    seen BOOLEAN DEFAULT false,
+    seen_at TIMESTAMP
+);

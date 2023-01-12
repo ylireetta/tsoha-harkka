@@ -86,3 +86,8 @@ def get_followed_sessions(user_id):
             (SELECT followed_user_id FROM followedusers WHERE follower_id=:user_id)"
     result = DB.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
+
+def get_session_owner(session_id):
+    sql = "SELECT user_id FROM trainingsessions WHERE id=:session_id"
+    result = DB.session.execute(sql, {"session_id":session_id})
+    return result.fetchone()["user_id"]

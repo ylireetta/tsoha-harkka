@@ -5,19 +5,24 @@ import moves
 import templates
 import trainingsessions
 import likesandcomments
+import notifications
 
 @APP.route("/")
 def index():
     followed_sessions = None
     liked_by_user = None
+    users_notifs = None
+
     if session.get("user_id"):
         followed_sessions = trainingsessions.get_followed_sessions(session["user_id"])
         liked_by_user = likesandcomments.get_likes_by_user(session["user_id"])
+        users_notifs = notifications.get_users_notifications(session["user_id"])
 
     return render_template(
         "index.html", 
         followed_sessions=followed_sessions, 
-        liked_by_user=liked_by_user
+        liked_by_user=liked_by_user,
+        users_notifs=users_notifs
     )
 
 @APP.route("/register", methods=["GET", "POST"])
@@ -162,6 +167,9 @@ def trainingdata():
     if not session.get("user_id"):
         return redirect("/")
 
+    users_sessions = trainingsessions.get_recent_sessions(session["user_id"])
+
+    # Moves, templates and max weights need to be handled differently, since they need to be JSON serializable.
     all_moves = moves.get_moves()
     moves_result = []
 
@@ -174,12 +182,6 @@ def trainingdata():
     for row in users_templates:
         all_templates.append(dict(row))
 
-    users_sessions = trainingsessions.get_recent_sessions(session["user_id"])
-    sessions = []
-
-    for row in users_sessions:
-        sessions.append(dict(row))
-
     recent_max = trainingsessions.get_recent_max_weights(session["user_id"])
     max_weights = []
 
@@ -190,7 +192,7 @@ def trainingdata():
         "trainingdata.html",
         data_view_moves=moves_result,
         templates=all_templates,
-        sessions=sessions,
+        sessions=users_sessions,
         max_weights=max_weights
     )
 
@@ -298,7 +300,9 @@ def toggle_like(id_):
     like = "like" in request.form
 
     if like:
-        likesandcomments.like(id_, session["user_id"])
+        like_id = likesandcomments.like(id_, session["user_id"])
+        if isinstance(like_id, int) and trainingsessions.get_session_owner(id_) != session["user_id"]:
+            notifications.create_notification(like_id)
     else:
         likesandcomments.remove_like(id_, session["user_id"])
     
@@ -308,8 +312,11 @@ def toggle_like(id_):
 def add_comment(id_):
     if request.method == "POST":
         content = request.form["commenttext"]
+        comment_id = likesandcomments.add_comment(session["user_id"], id_, content)
 
-        if likesandcomments.add_comment(session["user_id"], id_, content):
+        if isinstance(comment_id, int):
+            if trainingsessions.get_session_owner(id_) != session["user_id"]:
+                notifications.create_notification(comment_id)
             flash("Comment added!", "alert alert-success")
         else:
             flash("Could not add new comment.", "alert alert-danger")
@@ -324,3 +331,8 @@ def remove_comment(id_):
         flash("Something went wrong - couldn't delete comment.", "alert alert-danger")
 
     return redirect(request.referrer)
+
+@APP.route("/markasseen/<int:id_>", methods=["POST"])
+def mark_as_seen(id_):
+    notifications.mark_as_seen(id_)
+    return redirect("/")

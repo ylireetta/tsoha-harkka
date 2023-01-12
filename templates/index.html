@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="col-8">
+<div class="col-sm">
     {% if not session.username %}
         <form action="/login" method="POST">
             <p>
@@ -20,45 +20,63 @@
         <a href="/register">Register</a>
     {% else %}
         <h1>Welcome, {{session.username}}!</h1>
-        <div class="accordion">
-        {% for followed_session in followed_sessions %}
-            {% if loop.first or loop.previtem.ses_id != followed_session.ses_id %}
-                <div class="card">
-                    <div class="card-header" id="sessionheader-{{followed_session.ses_id}}">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#session-{{followed_session.ses_id}}" aria-expanded="true" aria-controls="session-{{followed_session.ses_id}}">
-                                {{followed_session.username}}
-                            </button>
-                            <form action="/like/{{followed_session.ses_id}}" method="POST">
-                                {% if followed_session.liked_by_current_user %}
-                                    <button type="submit" class="btn btn-link" name="removelike">
-                                        <i class="bi bi-heart-fill"></i>
-                                    </button>
-                                    {% else %}
-                                    <button type="submit" class="btn btn-link" name="like">
-                                        <i class="bi bi-heart"></i>
-                                    </button>
-                                {% endif %}
-                                {{followed_session.likes}}
-                            </form>
-                        </h5>
-                    </div>
+        {% if users_notifs %}
+        <div class="col-8">
+            <h2>Notifications</h2>
+            <ul>
+            {% for notif in users_notifs %}
+                <li>
+                    New {{notif.actiontype}} from {{notif.username}} on your <a href="/trainingsession/{{notif.target_id}}">trainingsession {{notif.target_id}}</a>!
+                    <form action="/markasseen/{{notif.id}}" method="POST">
+                        <button type="submit" class="btn btn-link"><i class="bi bi-check2-circle"></i></button>
+                    </form>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
 
-                    <div id="session-{{followed_session.ses_id}}" class="collapse" aria-labelledby="sessionheader-{{followed_session.ses_id}}" data-parent="#accordion">
-                        <div class="card-body">
-                            <ul>
-                                {% for row in followed_sessions %}
-                                    {% if row.ses_id == followed_session.ses_id %}
-                                        <li>{{row.reps}} reps of {{row.move_name}} with {{row.weights}} kg</li>
+        <div class="col-8">
+            <div class="accordion">
+            {% for followed_session in followed_sessions %}
+                {% if loop.first or loop.previtem.ses_id != followed_session.ses_id %}
+                    <div class="card">
+                        <div class="card-header" id="sessionheader-{{followed_session.ses_id}}">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#session-{{followed_session.ses_id}}" aria-expanded="true" aria-controls="session-{{followed_session.ses_id}}">
+                                    {{followed_session.username}}
+                                </button>
+                                <form action="/like/{{followed_session.ses_id}}" method="POST">
+                                    {% if followed_session.liked_by_current_user %}
+                                        <button type="submit" class="btn btn-link" name="removelike">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </button>
+                                        {% else %}
+                                        <button type="submit" class="btn btn-link" name="like">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
                                     {% endif %}
-                                {% endfor %}
-                            </ul>
-                            <a href="/trainingsession/{{followed_session.ses_id}}">Open</a>
+                                    {{followed_session.likes}}
+                                </form>
+                            </h5>
+                        </div>
+
+                        <div id="session-{{followed_session.ses_id}}" class="collapse" aria-labelledby="sessionheader-{{followed_session.ses_id}}" data-parent="#accordion">
+                            <div class="card-body">
+                                <ul>
+                                    {% for row in followed_sessions %}
+                                        {% if row.ses_id == followed_session.ses_id %}
+                                            <li>{{row.reps}} reps of {{row.move_name}} with {{row.weights}} kg</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <a href="/trainingsession/{{followed_session.ses_id}}">Open</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {%endif%}
-        {% endfor %}
+                {%endif%}
+            {% endfor %}
+            </div>
         </div>
     {% endif %}
 </div>

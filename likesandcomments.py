@@ -2,10 +2,10 @@ from db import DB
 
 def like(target_id, user_id):
     try:
-        sql = "INSERT INTO actions (user_id, target_id, actiontype, actiondate) VALUES (:user_id, :target_id, 'like', NOW())"
-        DB.session.execute(sql, {"target_id":target_id, "user_id":user_id})
+        sql = "INSERT INTO actions (user_id, target_id, actiontype, actiondate) VALUES (:user_id, :target_id, 'like', NOW()) RETURNING id"
+        result = DB.session.execute(sql, {"target_id":target_id, "user_id":user_id})
         DB.session.commit()
-        return True
+        return result.fetchone()["id"]
     except:
         return False
 
@@ -25,10 +25,10 @@ def get_likes_by_user(user_id):
 
 def add_comment(user_id, target_id, content):
     try:
-        sql = "INSERT INTO actions (user_id, target_id, actiontype, content, actiondate) VALUES (:user_id, :target_id, 'comment', :content, NOW())"
-        DB.session.execute(sql, {"user_id":user_id, "target_id":target_id, "content":content})
+        sql = "INSERT INTO actions (user_id, target_id, actiontype, content, actiondate) VALUES (:user_id, :target_id, 'comment', :content, NOW()) RETURNING id"
+        result = DB.session.execute(sql, {"user_id":user_id, "target_id":target_id, "content":content})
         DB.session.commit()
-        return True
+        return result.fetchone()["id"]
     except:
         return False
 
