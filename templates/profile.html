@@ -97,8 +97,8 @@
                     <form action="/profile" method="POST">
                         <div class="form-group col-6">
                             <label for="allow_follow">Allow others to follow me</label>
-                            <input type="radio" name="allow_follow" id="allow_follow" value="true" {{'checked' if allow_follow_value else ''}}> Yes
-                            <input type="radio" name="allow_follow" id="allow_follow" value="false" {{'checked' if not allow_follow_value else ''}}> No
+                            <input type="radio" name="allow_follow" id="allow_follow" value="true" {{"checked" if allow_follow_value else ""}}> Yes
+                            <input type="radio" name="allow_follow" id="allow_follow" value="false" {{"checked" if not allow_follow_value else ""}}> No
                         </div>
                         <div class="form-group col-6">
                             <button type="submit" class="btn btn-primary">Save changes</button>
