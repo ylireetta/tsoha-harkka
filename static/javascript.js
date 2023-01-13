@@ -13,7 +13,7 @@ $(document).ready(function() {
     }
 
     $("#show-hide-comments").click(function() {
-        localStorage.getItem("show-comments") 
+        localStorage.getItem("show-comments") == getNumber(window.location.pathname)
             ? localStorage.removeItem("show-comments")
             : localStorage.setItem("show-comments", getNumber(window.location.pathname));
     });

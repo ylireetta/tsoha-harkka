@@ -268,6 +268,9 @@ def delete_move(id_):
 
 @APP.route("/trainingsession/<int:id_>", methods=["GET"])
 def get_trainingsessions(id_):
+    if not session.get("user_id"):
+        return redirect("/")
+
     session_data = trainingsessions.get_session_data(session["user_id"], id_)
 
     if session_data:
@@ -289,6 +292,9 @@ def get_trainingsessions(id_):
 
 @APP.route("/userdata", methods=["GET"])
 def userdata():
+    if not session.get("user_id"):
+        return redirect("/")
+
     userlist = users.get_userlist_with_followinfo(session["user_id"])
 
     return render_template("userdata.html", users=userlist)

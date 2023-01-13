@@ -54,6 +54,7 @@ def get_session_data(user_id, session_id):
         LEFT JOIN trainingsessions TS ON TS.id=S.session_id \
         LEFT JOIN moves M ON S.move_id=M.id \
         WHERE TS.completed=true AND TS.id=:session_id \
+        AND U.allow_follow=true \
         ORDER BY M.id"
         # Add condition TS.user_id=:user_id
         # if we need to restrict who can see individual session pages
