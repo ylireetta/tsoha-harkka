@@ -1,7 +1,9 @@
 from db import DB
 
 def get_users_templates(user_id):
-    sql = "SELECT T.id, T.template_name, M.move_name, M.id AS move_id, MIT.number_of_sets, M.visible \
+    sql = "SELECT T.id, T.template_name, \
+        M.move_name, M.id AS move_id, M.visible, \
+        MIT.number_of_sets \
         FROM trainingtemplates T, moves_in_template MIT, moves M \
         WHERE T.user_id=:user_id AND MIT.template_id=T.id AND M.id=MIT.move_id"
     result = DB.session.execute(sql, {"user_id":user_id})
@@ -22,7 +24,12 @@ def add_to_reference_table(template_id, move_id, number_of_sets):
     try:
         sql = "INSERT INTO moves_in_template (template_id, move_id, number_of_sets) \
             VALUES (:template_id, :move_id, :number_of_sets)"
-        DB.session.execute(sql, {"template_id":template_id, "move_id":move_id, "number_of_sets":number_of_sets})
+        DB.session.execute(
+            sql,
+            {"template_id":template_id,
+            "move_id":move_id,
+            "number_of_sets":number_of_sets}
+        )
         DB.session.commit()
         return True
     except:

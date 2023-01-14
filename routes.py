@@ -129,7 +129,7 @@ def profile():
     # Get current value from database.
     allow_follow_value = bool(users.get_allow_follow(session["username"]))
 
-    if request.method == "POST" and "allow-follow" in request.form:
+    if (request.method == "POST" and "allow-follow" in request.form):
         success = users.update_user(session["username"], request.form["allow-follow"])
 
         if not success:
@@ -203,8 +203,13 @@ def add_training_session():
         submitted_reps_list = request.form.getlist("reps")
         submitted_weights_list = request.form.getlist("weights")
 
-        if len(submitted_move_list) == 0 or len(submitted_reps_list) == 0 or len(submitted_weights_list) == 0:
-            flash("Information regarding selected moves, reps or weights is missing.", "alert alert-danger")
+        if (len(submitted_move_list) == 0
+            or len(submitted_reps_list) == 0
+            or len(submitted_weights_list) == 0):
+            flash(
+                "Information regarding selected moves, reps or weights is missing.",
+                "alert alert-danger"
+            )
             return redirect(request.referrer)
 
         session_id = trainingsessions.add_training_session(user_id)
@@ -234,8 +239,11 @@ def create_template():
             selected_moves = request.form.getlist("selected-move-id")
             sets = request.form.getlist("sets")
 
-            if len(selected_moves) == 0 or len(sets) == 0:
-                flash("Information regarding selected moves or number of sets is missing.", "alert alert-danger")
+            if (len(selected_moves) == 0 or len(sets) == 0):
+                flash(
+                    "Information regarding selected moves or number of sets is missing.",
+                    "alert alert-danger"
+                )
                 return redirect("/profile")
 
             for move_id, number_of_sets in zip(selected_moves, sets):
