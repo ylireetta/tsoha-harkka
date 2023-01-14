@@ -199,13 +199,17 @@ def add_training_session():
     # https://stackoverflow.com/questions/50146815/getting-multiple-html-fields-with-same-name-using-getlist-with-flask-in-python
     if request.method == "POST":
         user_id = session["user_id"]
+        submitted_move_list = request.form.getlist("selected_moves")
+        submitted_reps_list = request.form.getlist("reps")
+        submitted_weights_list = request.form.getlist("weights")
+
+        if len(submitted_move_list) == 0 or len(submitted_reps_list) == 0 or len(submitted_weights_list) == 0:
+            flash("Information regarding selected moves, reps or weights is missing.", "alert alert-danger")
+            return redirect(request.referrer)
+
         session_id = trainingsessions.add_training_session(user_id)
 
         if isinstance(session_id, int):
-            submitted_move_list = request.form.getlist("selected_moves")
-            submitted_reps_list = request.form.getlist("reps")
-            submitted_weights_list = request.form.getlist("weights")
-
             for move, reps, weights in zip(submitted_move_list,
             submitted_reps_list, submitted_weights_list):
                 if not trainingsessions.add_set(user_id, session_id, move, reps, weights):
@@ -224,16 +228,18 @@ def add_training_session():
 @APP.route("/createtemplate", methods=["GET", "POST"])
 def create_template():
     if request.method == "POST":
-        if len(request.form.getlist("selected_moves")) == 0:
-            flash("Please select moves when creating a training template.", "alert alert-danger")
-            return redirect("/profile")
-
         creation_ret = templates.create_template(session["user_id"], request.form["template_name"])
         if isinstance(creation_ret, int):
             # Get selected move ids as list.
-            selected_moves = request.form.getlist("selected_moves")
-            for move_id in selected_moves:
-                templates.add_to_reference_table(creation_ret, int(move_id))
+            selected_moves = request.form.getlist("selected_move_id")
+            sets = request.form.getlist("sets")
+
+            if len(selected_moves) == 0 or len(sets) == 0:
+                flash("Information regarding selected moves or number of sets is missing.", "alert alert-danger")
+                return redirect("/profile")
+
+            for move_id, number_of_sets in zip(selected_moves, sets):
+                templates.add_to_reference_table(creation_ret, int(move_id), number_of_sets)
             flash("Template saved successfully!", "alert alert-success")
         else:
             flash("Could not create new template.", "alert alert-danger")

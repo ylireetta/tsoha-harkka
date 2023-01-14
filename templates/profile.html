@@ -41,25 +41,39 @@
                         </tbody>
                     </table>
                     
-                    <!-- When button is clicked, hiddendiv is shown. -->
                     <a class="btn btn-primary" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv">Create training template</a>
                     <div class="collapse" id="hiddendiv">
                         <form action="/createtemplate" method="POST">
                             <div class="form-group col-6">
                                 <label for="template_name">Template name:</label>
-                                <input type="text" class="form-control" name="template_name" id="template_name">
+                                <input type="text" class="form-control" name="template_name" id="template_name" required>
                             </div>
                             <div class="form-group col-6">
                                 <label for="selected_moves">Select moves for template:</label>
-                                <select name="selected_moves" id="selected_moves" class="selectpicker" multiple>
+                                <select name="selected_moves" id="selected_moves" class="selectpicker" multiple required>
                                     {% for move in moves %}
                                         <option value={{move.id}}>{{move.move_name}}</option>
                                     {% endfor %}
-
                                 </select>
                             </div>
                             <div class="form-group col-6">
-                                <button type="submit" class="btn btn-primary">Save template</button>
+                                <table id="selection-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="th-sm">Move</th>
+                                            <th class="th-sm">Sets</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="selection-data">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="form-group col-6">
+                                <button type="button" class="btn btn-info" id="finalize-selection">Select</button>
+                            </div>
+                            <div class="form-group col-6">
+                                <button type="submit" class="btn btn-primary" id="submit-template">Save template</button>
                             </div>
                         </form>
                     </div>

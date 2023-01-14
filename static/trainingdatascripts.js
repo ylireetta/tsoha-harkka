@@ -54,6 +54,10 @@ $(document).ready(function() {
         addTableRow();
     });
 
+    $("#clearBtn").click(function() {
+        $("#selectedMoves").find("tr").remove();
+    });
+
     $("body").on("change", ".moveSelect", function() {
         var parentRow = $(this).parent().parent();
 
@@ -71,7 +75,7 @@ $(document).ready(function() {
 
     $("#selectTemplate").click(function() {
         // When this button is clicked, use the selected template as base for workout.
-        // I.e., add each move in template as new row to data table.
+        // I.e., add each move in template as new row to data table. If template includes multiple sets of the same move, add rows.
         // Clear previous rows, if any.
         $("#selectedMoves").find("tr").remove();
         
@@ -85,9 +89,13 @@ $(document).ready(function() {
         // Add however many table rows are needed and adjust move selections.
         selectedTemplateRows.forEach(row => {
             if (row.visible) {
-                var indexToAdd = nextIndex;
-                addTableRow();
-                $("#select" + indexToAdd).val(row.move_id).change();
+                var number_of_sets = row.number_of_sets;
+                
+                for (var i = 1; i <= number_of_sets; i++) {
+                    var indexToAdd = nextIndex;
+                    addTableRow();
+                    $("#select" + indexToAdd).val(row.move_id).change();
+                }
             }
         });
 
