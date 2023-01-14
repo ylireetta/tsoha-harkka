@@ -42,6 +42,7 @@
         {% endif %}
 
         <div class="col-8">
+            <h2>Recent activity by followed users</h2>
             <div class="accordion">
             {% for followed_session in followed_sessions %}
                 {% if loop.first or loop.previtem.ses_id != followed_session.ses_id %}
@@ -49,7 +50,7 @@
                         <div class="card-header" id="sessionheader-{{followed_session.ses_id}}">
                             <h5 class="mb-0">
                                 <button class="btn btn-link" data-toggle="collapse" data-target="#session-{{followed_session.ses_id}}" aria-expanded="true" aria-controls="session-{{followed_session.ses_id}}">
-                                    {{followed_session.username}}
+                                    {{followed_session.username}} on {{followed_session.created_at}}
                                 </button>
                                 <form action="/like/{{followed_session.ses_id}}" method="POST">
                                     {% if followed_session.liked_by_current_user %}
