@@ -9,7 +9,7 @@ New users can register with a _unique_ username. As of now, passwords can be wha
 
 
 ## Move database
-Users can add new moves to the database, if their desired move is not already added. The database can be queried by providing a search phrase and specifying if the user wants to see only moves they have added.
+Users can add new moves to the database if their desired move is not already added. The database can be queried by providing a search phrase and specifying if the user wants to see only moves they themselves have added.
 
 
 ## User database
@@ -17,15 +17,15 @@ Users can inspect the list of all users in the system. If the listed users have 
 
 ## Training data
 ### Adding a new workout
-Users can add new workout records by adding moves, reps and used weights individually, or by selecting a workout template and using the data derived from the template. The system will prefill reps and weights for selected moves if the user has previously logged workouts available in the database.
+Users can add new workout records by adding moves, reps and used weights individually, or by selecting a workout template and using the data derived from the template. The system will prefill reps and weights for the selected moves if the user has previously logged workouts that include those selected moves.
 
 
 ### Current user's workout history
-Users can inspect their own workout history by clicking individual training session links.
+Users can inspect their own workout history by clicking individual training session links on the Training Data page.
 
 
 ### Followed users' workout history
-If the currently logged in user is following other users, and followed users have recorded workouts in the system, followed users' workout data is displayed on the index page.
+If the currently logged in user is following other users, and followed users have recorded workouts during the past 7 days in the system, followed users' workout data is displayed on the index page. The logged in user can like and comment individual sessions, and a notification related to each action is displayed to the session owner when they navigate to the index page. Users can also remove likes and comments that they have added.
 
 
 ## User profile
