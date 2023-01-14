@@ -33,7 +33,7 @@ $(document).ready(function() {
     
     // Get json supplied by Flask.
     var moves = appConfig.all_moves;
-    var max_weights = appConfig.max_weights;
+    var maxWeights = appConfig.max_weights;
     var templates = appConfig.templates;
 
     var options = "";
@@ -50,15 +50,15 @@ $(document).ready(function() {
     $(".selectpicker").selectpicker();
 
     // Add rows in training data view.
-    $("#addBtn").click(function() {
+    $("#add-btn").click(function() {
         addTableRow();
     });
 
-    $("#clearBtn").click(function() {
-        $("#selectedMoves").find("tr").remove();
+    $("#clear-btn").click(function() {
+        $("#selected-moves").find("tr").remove();
     });
 
-    $("body").on("change", ".moveSelect", function() {
+    $("body").on("change", ".move-select", function() {
         var parentRow = $(this).parent().parent();
 
         var selectedMoveId = parseInt($(this).val());
@@ -67,19 +67,19 @@ $(document).ready(function() {
         setTableDefaultInput(selectedMoveId, selectionIdNumber, parentRow);
     });
 
-    $("#trainingDataTable").on("click", "button[name=removeBtn]", function() {
+    $("#training-data-table").on("click", "button[name=remove-btn]", function() {
         $(this).closest("tr").remove();
     });
 
-    $("#infoBtn").tooltip().attr("title", "Moves that have been removed from the database will not be added to new training sessions.");
+    $("#info-btn").tooltip().attr("title", "Moves that have been removed from the database will not be added to new training sessions.");
 
-    $("#selectTemplate").click(function() {
+    $("#select-template").click(function() {
         // When this button is clicked, use the selected template as base for workout.
         // I.e., add each move in template as new row to data table. If template includes multiple sets of the same move, add rows.
         // Clear previous rows, if any.
-        $("#selectedMoves").find("tr").remove();
+        $("#selected-moves").find("tr").remove();
         
-        var selectedTemplateId = parseInt($("#usersTemplates").val());
+        var selectedTemplateId = parseInt($("#users-templates").val());
 
         // One template is basically a collection of move rows, connected by a common template id.
         var selectedTemplateRows = templates.filter(function(item) {
@@ -109,7 +109,7 @@ $(document).ready(function() {
             var finalReps = 1;
             var finalWeights = 0;
 
-            var previousSet = max_weights.filter(function(item) {
+            var previousSet = maxWeights.filter(function(item) {
                 return (parseInt(item.id) === parseInt(selectedMoveId));
             });
     
@@ -130,10 +130,10 @@ $(document).ready(function() {
     };
 
     function addTableRow() {
-        $("#selectedMoves").append("\
+        $("#selected-moves").append("\
             <tr>\
                 <td>\
-                    <select class='moveSelect' name='selected_moves' id='select" + nextIndex + "'>\
+                    <select class='move-select' name='selected-moves' id='select" + nextIndex + "'>\
                         " + options +"\
                     </select>\
                 </td>\
@@ -144,7 +144,7 @@ $(document).ready(function() {
                     <input type='number' name='weights' id='weights" + nextIndex + "' min='0' step=0.25 required>\
                 </td>\
                 <td>\
-                <button type='button' class='btn btn-link' name='removeBtn'>Remove</button>\
+                <button type='button' class='btn btn-link' name='remove-btn'>Remove</button>\
                 </td>\
             </tr>");
 

@@ -18,19 +18,19 @@
     
     <div class="accordion">
         <div class="card">
-            <div class="card-header" id="addSessionHeader">
+            <div class="card-header" id="add-session-header">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#addSession" aria-expanded="true" aria-controls="addSession">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#add-session" aria-expanded="true" aria-controls="add-session">
                         Add Session
                     </button>
                 </h5>
             </div>
 
-            <div id="addSession" class="collapse show" aria-labelledby="addSessionHeader" data-parent="#accordion">
+            <div id="add-session" class="collapse show" aria-labelledby="add-session-header" data-parent="#accordion">
                 <div class="card-body">
-                    <form id="dataForm" action="/addtrainingsession" method="POST">
+                    <form id="data-form" action="/addtrainingsession" method="POST">
                         <div class="form-group col-6">
-                            <table id="trainingDataTable" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                            <table id="training-data-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th class="th-sm">Move</th>
@@ -38,25 +38,25 @@
                                         <th class="th-sm">Weights</th>
                                     </tr>
                                 </thead>
-                                <tbody id="selectedMoves">
+                                <tbody id="selected-moves">
                                     
                                 </tbody>
                             </table>
                         </div>
                         <div class="form-group col-6">
-                            <button type="button" class="btn btn-info" id="addBtn">Add</button>
-                            <button type="button" class="btn btn-light" id="clearBtn">Clear table</button>
+                            <button type="button" class="btn btn-info" id="add-btn">Add</button>
+                            <button type="button" class="btn btn-light" id="clear-btn">Clear table</button>
                         </div>
                         <div class="form-group col-6">
-                            <select id="usersTemplates">
+                            <select id="users-templates">
                                 {% for template in templates %}
                                 {% if loop.first or loop.previtem.id != template.id %}
                                     <option value="{{template.id}}">{{template.template_name}}</option>
                                 {% endif %}
                                 {% endfor %}
                             </select>
-                            <button type="button" class="btn btn-light" id="selectTemplate">Select template</button>
-                            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" id="infoBtn">Why are some moves missing?</button>
+                            <button type="button" class="btn btn-light" id="select-template">Select template</button>
+                            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" id="info-btn">Why are some moves missing?</button>
                         </div>
                         <div class="form-group col-6">
                             <button type="submit" class="btn btn-primary">Save session</button>
@@ -67,15 +67,15 @@
         </div>
 
         <div class="card">
-            <div class="card-header" id="myRecentSessionsHeader">
+            <div class="card-header" id="my-recent-sessions-header">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#myRecentSessions" aria-expanded="false" aria-controls="myRecentSessions">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#my-recent-sessions" aria-expanded="false" aria-controls="my-recent-sessions">
                         My Recent Sessions
                     </button>
                 </h5>
             </div>
 
-            <div id="myRecentSessions" class="collapse" aria-labelledby="myRecentSessionsHeader" data-parent="#accordion">
+            <div id="my-recent-sessions" class="collapse" aria-labelledby="my-recent-sessions-header" data-parent="#accordion">
                 <div class="card-body">
                     <ul>
                         {% for ses in sessions %}

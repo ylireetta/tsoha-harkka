@@ -32,12 +32,12 @@ $(document).ready(function() {
 
     $("#finalize-selection").click(function() {
         // Get selected move ids from dropdown select and pair them with move names.
-        var selectedIds = $("#selected_moves").val();
+        var selectedIds = $("#selected-moves").val();
         
         if (selectedIds) {
             var selectedText = [];
         
-            $("#selected_moves option:selected").each(function() {
+            $("#selected-moves option:selected").each(function() {
                 var selText = $(this).text();
                 selectedText.push(selText);
             });
@@ -56,7 +56,7 @@ $(document).ready(function() {
         $("#selection-data").append("\
             <tr>\
                 <td>\
-                    <input type='hidden' name='selected_move_id' value='" + moveId + "'>" + moveName + "\
+                    <input type='hidden' name='selected-move-id' value='" + moveId + "'>" + moveName + "\
                 </td>\
                 <td>\
                     <input type='number' name='sets' id='sets" + nextIndex +"' min='1' value='1' required>\

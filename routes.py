@@ -129,14 +129,14 @@ def profile():
     # Get current value from database.
     allow_follow_value = bool(users.get_allow_follow(session["username"]))
 
-    if request.method == "POST" and "allow_follow" in request.form:
-        success = users.update_user(session["username"], request.form["allow_follow"])
+    if request.method == "POST" and "allow-follow" in request.form:
+        success = users.update_user(session["username"], request.form["allow-follow"])
 
         if not success:
             flash("Could not update allow_follow.", "alert alert-danger")
         else:
             flash("Allow_follow successfully updated!", "alert alert-success")
-            allow_follow_value = request.form["allow_follow"].lower() == "true"
+            allow_follow_value = request.form["allow-follow"].lower() == "true"
 
     return render_template(
         "profile.html",
@@ -199,7 +199,7 @@ def add_training_session():
     # https://stackoverflow.com/questions/50146815/getting-multiple-html-fields-with-same-name-using-getlist-with-flask-in-python
     if request.method == "POST":
         user_id = session["user_id"]
-        submitted_move_list = request.form.getlist("selected_moves")
+        submitted_move_list = request.form.getlist("selected-moves")
         submitted_reps_list = request.form.getlist("reps")
         submitted_weights_list = request.form.getlist("weights")
 
@@ -228,10 +228,10 @@ def add_training_session():
 @APP.route("/createtemplate", methods=["GET", "POST"])
 def create_template():
     if request.method == "POST":
-        creation_ret = templates.create_template(session["user_id"], request.form["template_name"])
+        creation_ret = templates.create_template(session["user_id"], request.form["template-name"])
         if isinstance(creation_ret, int):
             # Get selected move ids as list.
-            selected_moves = request.form.getlist("selected_move_id")
+            selected_moves = request.form.getlist("selected-move-id")
             sets = request.form.getlist("sets")
 
             if len(selected_moves) == 0 or len(sets) == 0:
@@ -335,7 +335,7 @@ def toggle_like(id_):
 @APP.route("/addcomment/<int:id_>", methods=["GET", "POST"])
 def add_comment(id_):
     if request.method == "POST":
-        content = request.form["commenttext"]
+        content = request.form["comment-text"]
         comment_id = likesandcomments.add_comment(session["user_id"], id_, content)
 
         if isinstance(comment_id, int):
