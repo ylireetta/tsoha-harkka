@@ -67,6 +67,39 @@ def logout():
     session.pop("user_id", None)
     return redirect("/")
 
+@APP.route("/userdata", methods=["GET"])
+def userdata():
+    if not session.get("user_id"):
+        return redirect("/")
+
+    userlist = users.get_userlist_with_followinfo(session["user_id"])
+
+    return render_template("userdata.html", users=userlist)
+
+@APP.route("/trainingsession/<int:id_>", methods=["GET"])
+def get_trainingsessions(id_):
+    if not session.get("user_id"):
+        return redirect("/")
+
+    session_data = trainingsessions.get_session_data(session["user_id"], id_)
+
+    if session_data:
+        session_comments = likesandcomments.get_comments(id_)
+        main_info = {
+            "session_id": id_,
+            "username": session_data[0].username,
+            "created_at": session_data[0].created_at
+        }
+        return render_template(
+            "trainingsession.html",
+            sessions=session_data,
+            comments=session_comments,
+            main_info=main_info
+        )
+
+    flash(f"No session with id {id_} found.", "alert alert-danger")
+    return redirect("/")
+
 @APP.route("/moveslibrary")
 def moveslibrary():
     if not session.get("user_id"):
@@ -84,6 +117,37 @@ def moveslibrary():
         render_moves = moves.get_moves()
 
     return render_template("moveslibrary.html", moves=render_moves)
+
+@APP.route("/addmove", methods=["GET", "POST"])
+def add_move():
+    if request.method == "POST":
+        move_name = request.form["movename"]
+        user_id = session["user_id"]
+
+        # TODO: the unique constraint needs work - since we do not actually delete moves from db when we 'delete',
+        # hidden moves take up move names and users cannot add new moves with the same name.
+        if not moves.add_move(move_name, user_id):
+            flash(
+                f"Could not add new move {move_name}. Move names need to be unique.",
+                "alert alert-danger"
+            )
+            return redirect("/moveslibrary")
+
+        flash(f"New move {move_name} successfully added!", "alert alert-success")
+    return redirect("/moveslibrary")
+
+@APP.route("/deletemove/<int:id_>", methods=["GET", "POST"])
+def delete_move(id_):
+    if request.method == "POST":
+        if moves.get_move_owner(id_) == session["user_id"]:
+            if moves.delete_move(id_):
+                flash(f"Move {id_} deleted!", "alert alert-success")
+            else:
+                flash(f"Could not delete move {id_}.", "alert alert-danger")
+        else:
+            flash("You can only delete moves you have added yourself.", "alert alert-danger")
+
+    return redirect("/moveslibrary")
 
 @APP.route("/profile", methods=["GET", "POST"])
 def profile():
@@ -145,19 +209,6 @@ def profile():
         users_templates=my_templates,
         complete_templates=complete_templates
     )
-
-@APP.route("/addmove", methods=["GET", "POST"])
-def add_move():
-    if request.method == "POST":
-        move_name = request.form["movename"]
-        user_id = session["user_id"]
-
-        if not moves.add_move(move_name, user_id):
-            flash(f"Could not add new move {move_name}.", "alert alert-danger")
-            return redirect("/moveslibrary")
-
-        flash(f"New move {move_name} successfully added!", "alert alert-success")
-    return redirect("/moveslibrary")
 
 @APP.route("/trainingdata", methods=["GET"])
 def trainingdata():
@@ -266,52 +317,6 @@ def delete_template(id_):
             flash("You can only delete your own training templates.", "alert alert-danger")
 
     return redirect("/profile")
-
-@APP.route("/deletemove/<int:id_>", methods=["GET", "POST"])
-def delete_move(id_):
-    if request.method == "POST":
-        if moves.get_move_owner(id_) == session["user_id"]:
-            if moves.delete_move(id_):
-                flash(f"Move {id_} deleted!", "alert alert-success")
-            else:
-                flash(f"Could not delete move {id_}.", "alert alert-danger")
-        else:
-            flash("You can only delete moves you have added yourself.", "alert alert-danger")
-
-    return redirect("/moveslibrary")
-
-@APP.route("/trainingsession/<int:id_>", methods=["GET"])
-def get_trainingsessions(id_):
-    if not session.get("user_id"):
-        return redirect("/")
-
-    session_data = trainingsessions.get_session_data(session["user_id"], id_)
-
-    if session_data:
-        session_comments = likesandcomments.get_comments(id_)
-        main_info = {
-            "session_id": id_,
-            "username": session_data[0].username,
-            "created_at": session_data[0].created_at
-        }
-        return render_template(
-            "trainingsession.html",
-            sessions=session_data,
-            comments=session_comments,
-            main_info=main_info
-        )
-
-    flash(f"No session with id {id_} found.", "alert alert-danger")
-    return redirect("/")
-
-@APP.route("/userdata", methods=["GET"])
-def userdata():
-    if not session.get("user_id"):
-        return redirect("/")
-
-    userlist = users.get_userlist_with_followinfo(session["user_id"])
-
-    return render_template("userdata.html", users=userlist)
 
 @APP.route("/followunfollow/<int:id_>", methods=["GET", "POST"])
 def follow_unfollow(id_):

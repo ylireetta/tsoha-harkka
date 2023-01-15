@@ -14,10 +14,22 @@ $(document).ready(function() {
         $("#hiddendiv").attr("class", "collapse show");
     }
 
+    if (localStorage.getItem("add-move-show") && localStorage.getItem("add-move-show") == "true") {
+        // We have previously clicked the comment button, so keep showing comment rows.
+        $("#moveslibrary-add").attr("aria-expanded", "true");
+        $("#add-move").attr("class", "collapse show");
+    }
+
     $("#show-hide-comments").click(function() {
         localStorage.getItem("show-comments") == getNumber(window.location.pathname)
             ? localStorage.removeItem("show-comments")
             : localStorage.setItem("show-comments", getNumber(window.location.pathname));
+    });
+
+    $("#moveslibrary-add").click(function() {
+        localStorage.getItem("add-move-show") == "true"
+            ? localStorage.removeItem("add-move-show")
+            : localStorage.setItem("add-move-show", "true");
     });
 
     $("#submit-template").click(function() {

@@ -7,58 +7,83 @@
 <div class="col-sm">
     <h1>Moves Library</h1>
 
-    <a class="btn btn-primary" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv">Add move to library</a>
-    
-    <div class="collapse" id="hiddendiv">
-        <form action="/addmove" method="POST">
-            <div class="form-group col-6">
-                <label for="movename">Move name:</label>
-                <input type="text" class="form-control" name="movename" id="movename" required>
+    <div class="accordion">
+        <div class="card">
+            <div class="card-header" id="add-move-header">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#add-move" aria-expanded="false" aria-controls="add-move" id="moveslibrary-add">
+                        Add New Move
+                    </button>
+                </h5>
             </div>
-            <div class="form-group col-6">
-                <button type="submit" class="btn btn-primary">Add move</button>
-            </div>
-        </form>
-    </div>
-</div>
 
-<div class="col-sm">
-    <form action="/moveslibrary" method="GET">
-        <div class="form-group col-6">
-            <label for="query">Search for:</label>
-            <input type="text" class="form-control" name="query" id="query">
-        </div>
-        <div class="form-group col-6">
-            <input type="checkbox" name="showmineonly" {{"checked" if request.args.get("showmineonly") else ""}}> Show my moves only
-        </div>
-        <div class="form-group col-6">
-            <button type="submit" class="btn btn-success">Search</button>
-        </div>
-    </form>
-</div>
-
-<div class="col-sm">
-    <table id="moveresults" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th class="th-sm">Move name</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for move in moves %}
-            <tr>
-                <td>{{move.move_name}}</td>
-                <td>
-                    {% if move.added_by == session.user_id %}
-                    <form action="/deletemove/{{move.id}}" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
+            <div id="add-move" class="collapse" aria-labelledby="add-move-header" data-parent="#accordion">
+                <div class="card-body">
+                    <form action="/addmove" method="POST">
+                        <div class="form-group col-6">
+                            <label for="movename">Move name:</label>
+                            <input type="text" class="form-control" name="movename" id="movename" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <button type="submit" class="btn btn-primary">Add move</button>
+                        </div>
                     </form>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="search-moves-header">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#search-moves" aria-expanded="true" aria-controls="search-moves">
+                        Search for Moves
+                    </button>
+                </h5>
+            </div>
+
+            <div id="search-moves" class="collapse show" aria-labelledby="search-moves-header" data-parent="#accordion">
+                <div class="card-body">
+                    <form action="/moveslibrary" method="GET">
+                        <div class="form-group col-6">
+                            <label for="query">Search for:</label>
+                            <input type="text" class="form-control" name="query" id="query">
+                        </div>
+                        <div class="form-group col-6">
+                            <input type="checkbox" name="showmineonly" {{"checked" if request.args.get("showmineonly") else ""}}> Show my moves only
+                        </div>
+                        <div class="form-group col-6">
+                            <button type="submit" class="btn btn-success">Search</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-sm">
+                    <table id="moveresults" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="th-sm">Move name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for move in moves %}
+                            <tr>
+                                <td>{{move.move_name}}</td>
+                                <td>
+                                    {% if move.added_by == session.user_id %}
+                                    <form action="/deletemove/{{move.id}}" method="post">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}
