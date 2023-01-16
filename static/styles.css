@@ -15,6 +15,10 @@ body {
     color: #555358ff;
 }
 
+a, .btn-link {
+    color: #9291f3ff;
+}
+
 /* Display index page card header and like icon on the same line. */
 .card-header button, form {
     display: inline;
@@ -24,12 +28,24 @@ body {
     float: right;
 }
 
-.card .btn-link {
-    color: #9291f3ff;
-}
-
 p form {
     display: inline;
+}
+
+.btn-outline-danger {
+    color: #f83a44ff;
+}
+
+.btn-info {
+    background-color: #9291f3ff;
+}
+
+.btn-primary {
+    
+}
+
+#hiddenfilterdiv #filter-content {
+    padding-top: 1em;
 }
 
 #hiddenfilterdiv button {

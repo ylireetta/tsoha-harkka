@@ -46,19 +46,21 @@
             <div class="col-sm">
                 <a class="btn btn-link" data-toggle="collapse" href="#hiddenfilterdiv" role="button" aria-expanded="false" aria-controls="hiddenfilterdiv" id="filter-sessions">Filter <i class="bi bi-filter"></i></a>
                 <div class="col-sm collapse" id="hiddenfilterdiv">
-                    <form action="/" method="GET" id="filterform">
-                        <div class="row">
-                            <div class="col-5">
-                                <label for="max-date">Sessions created on and after:</label>
+                    <div id="filter-content">
+                        <form action="/" method="GET" id="filterform">
+                            <div class="row">
+                                <div class="col-5">
+                                    <label for="max-date" class="col-form-label">Sessions created on and after:</label>
+                                </div>
+                                <div class="col">
+                                    <input type="date" class="form-control" name="max-date" id="max-date">
+                                </div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Get sessions</button>
+                                </div>
                             </div>
-                            <div class="col">
-                                <input type="date" class="form-control" name="max-date" id="max-date">
-                            </div>
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary">Get sessions</button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
             <hr>
