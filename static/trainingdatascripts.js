@@ -46,9 +46,6 @@ $(document).ready(function() {
     // When adding new table rows, use this variable as part of element id.
     var nextIndex = 1;
 
-    // Multiselect allowed for dropdown lists.
-    $(".selectpicker").selectpicker();
-
     // Add rows in training data view.
     $("#add-btn").click(function() {
         addTableRow();
@@ -132,19 +129,19 @@ $(document).ready(function() {
     function addTableRow() {
         $("#selected-moves").append("\
             <tr>\
-                <td>\
-                    <select class='move-select' name='selected-moves' id='select" + nextIndex + "'>\
+                <td class='col-6'>\
+                    <select class='move-select form-control' name='selected-moves' id='select" + nextIndex + "'>\
                         " + options +"\
                     </select>\
                 </td>\
-                <td>\
-                    <input type='number' name='reps' id='reps" + nextIndex +"' min='1' required>\
+                <td class='col-6'>\
+                    <input type='number' class='form-control' name='reps' id='reps" + nextIndex +"' min='1' required>\
                 </td>\
-                <td>\
-                    <input type='number' name='weights' id='weights" + nextIndex + "' min='0' step=0.25 required>\
+                <td class='col-6'>\
+                    <input type='number' class='form-control' name='weights' id='weights" + nextIndex + "' min='0' step=0.25 required>\
                 </td>\
-                <td>\
-                <button type='button' class='btn btn-link' name='remove-btn'>Remove</button>\
+                <td class='col-6'>\
+                    <button type='button' class='btn btn-link' name='remove-btn'>Remove</button>\
                 </td>\
             </tr>");
 

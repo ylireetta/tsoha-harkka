@@ -72,10 +72,11 @@ def get_recent_max_weights(user_id):
     result = DB.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
 
-def get_followed_sessions(user_id):
+def get_followed_sessions(user_id, **kwargs):
+    max_date = kwargs.get("max_date", None)
+
     # Get training sessions added by users who current user follows.
     # Include also info about likes.
-    # Hard coded as of now: get only sessions created during the last 7 days.
     sql = "SELECT \
             U.id AS user_id, U.username, \
             S.session_id AS ses_id, S.reps, S.weights, TS.created_at, \
@@ -86,11 +87,16 @@ def get_followed_sessions(user_id):
             (SELECT COUNT(*) FROM actions WHERE target_id=S.session_id AND actiontype='like') AS likes \
         FROM users U, sets S, trainingsessions TS, moves M \
         WHERE U.id=S.user_id AND TS.id=S.session_id AND M.id=S.move_id AND TS.completed=true \
-        AND TS.created_at >= NOW() - INTERVAL '7 DAYS' \
         AND TS.user_id IN \
-            (SELECT followed_user_id FROM followedusers WHERE follower_id=:user_id) \
-        ORDER BY TS.created_at DESC"
-    result = DB.session.execute(sql, {"user_id":user_id})
+            (SELECT followed_user_id FROM followedusers WHERE follower_id=:user_id)"
+
+    if max_date:
+        sql = sql + " AND TS.created_at>=date :max_date"
+    sql = sql + " ORDER BY TS.created_at DESC"
+    if max_date:
+        result = DB.session.execute(sql, {"user_id":user_id, "max_date":max_date})
+    else:
+        result = DB.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
 
 def get_session_owner(session_id):

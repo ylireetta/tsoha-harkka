@@ -14,9 +14,13 @@ def index():
     users_notifs = None
 
     if session.get("user_id"):
-        followed_sessions = trainingsessions.get_followed_sessions(session["user_id"])
         liked_by_user = likesandcomments.get_likes_by_user(session["user_id"])
         users_notifs = notifications.get_users_notifications(session["user_id"])
+        
+        if "max-date" in request.args and request.args["max-date"] != "":
+            followed_sessions = trainingsessions.get_followed_sessions(session["user_id"], max_date=request.args["max-date"])
+        else:
+            followed_sessions = trainingsessions.get_followed_sessions(session["user_id"])
 
     return render_template(
         "index.html",

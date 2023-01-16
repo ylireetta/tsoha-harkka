@@ -15,21 +15,27 @@ $(document).ready(function() {
     }
 
     if (localStorage.getItem("add-move-show") && localStorage.getItem("add-move-show") == "true") {
-        // We have previously clicked the comment button, so keep showing comment rows.
+        // We have previously clicked the add move button, so keep showing the form.
         $("#moveslibrary-add").attr("aria-expanded", "true");
         $("#add-move").attr("class", "collapse show");
     }
 
+    if (localStorage.getItem("filter-show") && localStorage.getItem("filter-show") == "true") {
+        // We have previously clicked the filter button, so keep showing the form.
+        $("#filter-sessions").attr("aria-expanded", "true");
+        $("#hiddenfilterdiv").attr("class", "col-sm collapse show");
+    }
+
     $("#show-hide-comments").click(function() {
-        localStorage.getItem("show-comments") == getNumber(window.location.pathname)
-            ? localStorage.removeItem("show-comments")
-            : localStorage.setItem("show-comments", getNumber(window.location.pathname));
+        setLocalStorage("show-comments", getNumber(window.location.pathname));
     });
 
     $("#moveslibrary-add").click(function() {
-        localStorage.getItem("add-move-show") == "true"
-            ? localStorage.removeItem("add-move-show")
-            : localStorage.setItem("add-move-show", "true");
+        setLocalStorage("add-move-show", "true");
+    });
+
+    $("#filter-sessions").click(function() {
+        setLocalStorage("filter-show", "true");
     });
 
     $("#submit-template").click(function() {
@@ -79,5 +85,11 @@ $(document).ready(function() {
             </tr>");
 
             nextIndex++;
+    };
+
+    function setLocalStorage(item, value) {
+        localStorage.getItem(item) == value
+            ? localStorage.removeItem(item)
+            : localStorage.setItem(item, value);
     };
 });

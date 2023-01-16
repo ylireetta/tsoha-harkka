@@ -11,7 +11,8 @@
 */
 
 body {
-    background-color: #F6F6F4;
+    background-color: #e9edebff;
+    color: #555358ff;
 }
 
 /* Display index page card header and like icon on the same line. */
@@ -23,6 +24,35 @@ body {
     float: right;
 }
 
+.card .btn-link {
+    color: #9291f3ff;
+}
+
 p form {
+    display: inline;
+}
+
+#hiddenfilterdiv button {
+    float: right;
+}
+
+#filter-sessions {
+    color: #f83a44ff;
+}
+
+/* Set dropdown list in training data table minimum width so that the longest move name fits. */
+.move-select {
+    min-width: max-content;
+}
+
+#selected-moves input {
+    min-width: 10em;
+}
+
+#users-templates {
+    min-width: max-content;
+}
+
+#select-template-div .form-control {
     display: inline;
 }

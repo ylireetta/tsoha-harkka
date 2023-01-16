@@ -44,11 +44,11 @@
                             </table>
                         </div>
                         <div class="form-group col-6">
-                            <button type="button" class="btn btn-info" id="add-btn">Add</button>
+                            <button type="button" class="btn btn-info" id="add-btn">Add row</button>
                             <button type="button" class="btn btn-light" id="clear-btn">Clear table</button>
                         </div>
-                        <div class="form-group col-6">
-                            <select id="users-templates">
+                        <div class="form-group col-6" id="select-template-div">
+                            <select id="users-templates" class="col-6 form-control">
                                 {% for template in templates %}
                                 {% if loop.first or loop.previtem.id != template.id %}
                                     <option value="{{template.id}}">{{template.template_name}}</option>

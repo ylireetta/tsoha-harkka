@@ -43,6 +43,25 @@
 
         <div class="col-8">
             <h2>Recent activity by followed users</h2>
+            <div class="col-sm">
+                <a class="btn btn-link" data-toggle="collapse" href="#hiddenfilterdiv" role="button" aria-expanded="false" aria-controls="hiddenfilterdiv" id="filter-sessions">Filter <i class="bi bi-filter"></i></a>
+                <div class="col-sm collapse" id="hiddenfilterdiv">
+                    <form action="/" method="GET" id="filterform">
+                        <div class="row">
+                            <div class="col-5">
+                                <label for="max-date">Sessions created on and after:</label>
+                            </div>
+                            <div class="col">
+                                <input type="date" class="form-control" name="max-date" id="max-date">
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary">Get sessions</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr>
             <div class="accordion">
             {% for followed_session in followed_sessions %}
                 {% if loop.first or loop.previtem.ses_id != followed_session.ses_id %}
