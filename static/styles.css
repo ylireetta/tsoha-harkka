@@ -15,6 +15,10 @@ body {
     color: #555358ff;
 }
 
+a.navbar-brand, span.navbar-text a {
+    color: #9291f3!important;
+}
+
 a, .btn-link {
     color: #9291f3ff;
 }

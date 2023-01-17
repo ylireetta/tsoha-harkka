@@ -6,21 +6,18 @@
 <div class="col-sm">
     <h1>Workout by {{main_info.username}} on {{main_info.created_at}}</h1>
     <div class="card">
-        <div class="col-8">
+        <div class="card-body">
             <ul>
                 {% for row in sessions %}
                 <li>{{row.reps}} reps of {{row.move_name}} with {{row.weights}} kg</li>
-                {% endfor %}
-        
-        
+                {% endfor %}  
             </ul>
         </div>
-        <div class="col-8">
+
+        <div class="card-body">
             <h2>
                 Comments <a class="btn btn-link" id="show-hide-comments" data-toggle="collapse" href="#hiddendiv" role="button" aria-expanded="false" aria-controls="hiddendiv"><i class="bi bi-chat-right"></i></a>
             </h2>
-            
-        
             <div class="collapse" id="hiddendiv">
                 <div class="col-8">
                     {% for row in comments %}
@@ -51,10 +48,8 @@
                         <button type="submit" class="btn btn-primary">Add comment</button>
                     </div>
                 </form>
-        
             </div>    
         </div>
     </div>
-    
 </div>
 {% endblock %}

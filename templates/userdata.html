@@ -31,17 +31,15 @@
                                     </form>
                                     {% elif user.follower_id == session.user_id and user.allow_follow %}
                                     <form action="/followunfollow/{{user.id}}" method="POST">
-        
                                         <button type="submit" class="btn btn-link" name="unfollow">
                                             Unfollow
                                         </button>
                                     </form>
                                     {% elif not user.allow_follow %}
-                                        Following disabled
+                                        <em>Following disabled</em>
                                     {%endif%}
                                 </td>
                             {% endif %}
-                            
                         </tr>
                     {% endif %}
                     {% endfor %}
