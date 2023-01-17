@@ -7,10 +7,12 @@ CREATE TABLE users (
 
 CREATE TABLE moves (
     id SERIAL PRIMARY KEY,
-    move_name TEXT UNIQUE,
+    move_name TEXT,
     added_by INTEGER REFERENCES users,
     visible BOOLEAN DEFAULT true
 );
+
+CREATE UNIQUE INDEX unique_move_name ON moves (move_name) WHERE visible=true;
 
 CREATE TABLE trainingtemplates (
     id SERIAL PRIMARY KEY,
@@ -20,7 +22,7 @@ CREATE TABLE trainingtemplates (
 
 CREATE TABLE moves_in_template (
     template_id INTEGER REFERENCES trainingtemplates ON DELETE CASCADE,
-    move_id INTEGER REFERENCES moves ON DELETE CASCADE,
+    move_id INTEGER REFERENCES moves,
     number_of_sets INTEGER
 );
 

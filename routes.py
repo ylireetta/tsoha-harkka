@@ -128,8 +128,6 @@ def add_move():
         move_name = request.form["movename"]
         user_id = session["user_id"]
 
-        # TODO: the unique constraint needs work - since we do not actually delete moves from db when we 'delete',
-        # hidden moves take up move names and users cannot add new moves with the same name.
         if not moves.add_move(move_name, user_id):
             flash(
                 f"Could not add new move {move_name}. Move names need to be unique.",
