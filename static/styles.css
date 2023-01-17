@@ -40,10 +40,6 @@ p form {
     background-color: #9291f3ff;
 }
 
-.btn-primary {
-    
-}
-
 #hiddenfilterdiv #filter-content {
     padding-top: 1em;
 }
@@ -71,4 +67,17 @@ p form {
 
 #select-template-div .form-control {
     display: inline;
+}
+
+th {
+    padding: 1em!important;
+}
+
+td {
+    padding: 0.5em!important;
+    min-width: max-content;
+}
+
+#users-table button {
+    padding: 0;
 }
