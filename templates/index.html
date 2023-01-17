@@ -6,21 +6,25 @@
 
     {% if not session.username %}
     <div class="col-8">
-        <form action="/login" method="POST">
-            <div class="form-group col-6">
-                <label for="username">Username:</label>
-                <input type="text" class="form-control" id="username" name="username">
-            </div>
-            <div class="form-group col-6">
-                <label for="password">Password:</label>
-                <input type="password" class="form-control" id="password" name="password">
-            </div>
-            <div class="form-group col-6">
+        <div class="card">
+            <div class="card-body">
+                <form action="/login" method="POST">
+                    <div class="form-group col-6">
+                        <label for="username">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="form-group col-6">
 
-                <button type="submit" class="btn btn-primary">Log in</button>
+                        <button type="submit" class="btn btn-primary">Log in</button>
+                    </div>
+                </form>
+                <a href="/register">Register</a>
             </div>
-        </form>
-        <a href="/register">Register</a>
+        </div>
     </div>
     {% else %}
     <div class="col-sm">
