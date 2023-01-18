@@ -1,41 +1,30 @@
 from db import DB
 
 def add_training_session(user_id):
-    try:
-        sql = "INSERT INTO trainingsessions (user_id, created_at) \
-            VALUES (:user_id, NOW()) RETURNING id"
-        result = DB.session.execute(sql, {"user_id":user_id})
-        DB.session.commit()
-        return result.fetchone()["id"]
-    except:
-        return False
+    sql = "INSERT INTO trainingsessions (user_id, created_at) \
+        VALUES (:user_id, NOW()) RETURNING id"
+    result = DB.session.execute(sql, {"user_id":user_id})
+    DB.session.commit()
+    return result.fetchone()["id"]
 
 def add_set(user_id, session_id, move_id, reps, weights):
-    try:
-        # Looping through all received sets. Add them to db.
-        # Change training session to completed if all goes well.
-        sql = "INSERT INTO sets (user_id, session_id, move_id, reps, weights) \
-            VALUES (:user_id, :session_id, :move_id, :reps, :weights)"
-        DB.session.execute(sql, {
-            "user_id":user_id,
-            "session_id":session_id,
-            "move_id":move_id,
-            "reps":reps,
-            "weights":weights
-        })
-        DB.session.commit()
-        return True
-    except:
-        return False
+    # Looping through all received sets. Add them to db.
+    # Change training session to completed if all goes well.
+    sql = "INSERT INTO sets (user_id, session_id, move_id, reps, weights) \
+        VALUES (:user_id, :session_id, :move_id, :reps, :weights)"
+    DB.session.execute(sql, {
+        "user_id":user_id,
+        "session_id":session_id,
+        "move_id":move_id,
+        "reps":reps,
+        "weights":weights
+    })
+    DB.session.commit()
 
 def complete_session(session_id):
-    try:
-        sql = "UPDATE trainingsessions SET completed=true WHERE id=:session_id"
-        DB.session.execute(sql, {"session_id":session_id})
-        DB.session.commit()
-        return True
-    except:
-        return False
+    sql = "UPDATE trainingsessions SET completed=true WHERE id=:session_id"
+    DB.session.execute(sql, {"session_id":session_id})
+    DB.session.commit()
 
 def get_recent_sessions(user_id):
     # Get table with data of completed workout sessions.
@@ -58,7 +47,7 @@ def get_session_data(user_id, session_id):
         LEFT JOIN trainingsessions TS ON TS.id=S.session_id \
         LEFT JOIN moves M ON S.move_id=M.id \
         WHERE TS.completed=true AND TS.id=:session_id \
-        AND U.allow_follow=true \
+        AND (U.allow_follow=true OR U.id=:user_id) \
         ORDER BY M.id"
         # Add condition TS.user_id=:user_id
         # if we need to restrict who can see individual session pages

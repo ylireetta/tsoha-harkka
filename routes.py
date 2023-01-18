@@ -113,7 +113,8 @@ def get_trainingsessions(id_):
             main_info=main_info
         )
 
-    flash(f"No session with id {id_} found.", "alert alert-danger")
+    flash(f"No session with id {id_} found. \
+        Either session {id_} does not exist, or its creator has disabled following.", "alert alert-danger")
     return redirect("/")
 
 @APP.route("/moveslibrary")
@@ -154,10 +155,8 @@ def add_move():
 def delete_move(id_):
     if request.method == "POST":
         if moves.get_move_owner(id_) == session["user_id"]:
-            if moves.delete_move(id_):
-                flash(f"Move {id_} deleted!", "alert alert-success")
-            else:
-                flash(f"Could not delete move {id_}.", "alert alert-danger")
+            moves.delete_move(id_)
+            flash(f"Move {id_} deleted!", "alert alert-success")
         else:
             flash("You can only delete moves you have added yourself.", "alert alert-danger")
 
@@ -208,13 +207,9 @@ def profile():
     allow_follow_value = bool(users.get_allow_follow(session["username"]))
 
     if (request.method == "POST" and "allow-follow" in request.form):
-        success = users.update_user(session["username"], request.form["allow-follow"])
-
-        if not success:
-            flash("Could not update allow_follow.", "alert alert-danger")
-        else:
-            flash("Allow_follow successfully updated!", "alert alert-success")
-            allow_follow_value = request.form["allow-follow"].lower() == "true"
+        users.update_user(session["username"], request.form["allow-follow"])
+        flash("Allow_follow successfully updated!", "alert alert-success")
+        allow_follow_value = request.form["allow-follow"].lower() == "true"
 
     return render_template(
         "profile.html",
@@ -282,14 +277,10 @@ def add_training_session():
         if isinstance(session_id, int):
             for move, reps, weights in zip(submitted_move_list,
             submitted_reps_list, submitted_weights_list):
-                if not trainingsessions.add_set(user_id, session_id, move, reps, weights):
-                    flash(
-                        f"Could not add set for move id {move}, aborting database operation.",
-                        "alert alert-danger"
-                    )
-                    break
-            if trainingsessions.complete_session(session_id):
-                flash("Training session successfully saved!", "alert alert-success")
+                trainingsessions.add_set(user_id, session_id, move, reps, weights)
+                
+            trainingsessions.complete_session(session_id)
+            flash("Training session successfully saved!", "alert alert-success")
         else:
             flash("Could not create new training session.", "alert alert-danger")
 
@@ -323,10 +314,8 @@ def create_template():
 def delete_template(id_):
     if request.method == "POST":
         if templates.get_template_owner(id_) == session["user_id"]:
-            if templates.delete_template(id_):
-                flash(f"Template {id_} deleted!", "alert alert-success")
-            else:
-                flash(f"Could not delete template {id_}.", "alert alert-danger")
+            templates.delete_template(id_)
+            flash(f"Template {id_} deleted!", "alert alert-success")
         else:
             flash("You can only delete your own training templates.", "alert alert-danger")
 
@@ -336,11 +325,8 @@ def delete_template(id_):
 def follow_unfollow(id_):
     if request.method == "POST":
         follow = "follow" in request.form
-
-        if users.follow_unfollow(session["user_id"], id_, follow):
-            flash(f"Follow information successfully updated for user {id_}.", "alert alert-success")
-        else:
-            flash(f"Failed to update follow information for user {id_}.", "alert alert-danger")
+        users.follow_unfollow(session["user_id"], id_, follow)
+        flash(f"Follow information successfully updated for user {id_}.", "alert alert-success")
 
     return redirect("/userdata")
 
@@ -380,10 +366,8 @@ def remove_comment(id_):
 
     if request.method == "POST":
         if likesandcomments.get_action_owner(id_) == session["user_id"]:
-            if likesandcomments.remove_comment(id_, session["user_id"]):
-                flash("You deleted your comment successfully!", "alert alert-success")
-            else:
-                flash("Something went wrong - couldn't delete comment.", "alert alert-danger")
+            likesandcomments.remove_comment(id_, session["user_id"])
+            flash("You deleted your comment successfully!", "alert alert-success")
         else:
             flash("You can only delete your own comments.", "alert alert-danger")
 

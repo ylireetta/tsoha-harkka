@@ -11,38 +11,27 @@ def get_users_templates(user_id):
     return templates
 
 def create_template(user_id, template_name):
-    try:
-        sql = "INSERT INTO trainingtemplates (user_id, template_name) \
-            VALUES (:user_id, :template_name) RETURNING id"
-        result = DB.session.execute(sql, {"user_id":user_id, "template_name":template_name})
-        DB.session.commit()
-        return result.fetchone()["id"]
-    except:
-        return False
+    sql = "INSERT INTO trainingtemplates (user_id, template_name) \
+        VALUES (:user_id, :template_name) RETURNING id"
+    result = DB.session.execute(sql, {"user_id":user_id, "template_name":template_name})
+    DB.session.commit()
+    return result.fetchone()["id"]
 
 def add_to_reference_table(template_id, move_id, number_of_sets):
-    try:
-        sql = "INSERT INTO moves_in_template (template_id, move_id, number_of_sets) \
-            VALUES (:template_id, :move_id, :number_of_sets)"
-        DB.session.execute(
-            sql,
-            {"template_id":template_id,
-            "move_id":move_id,
-            "number_of_sets":number_of_sets}
-        )
-        DB.session.commit()
-        return True
-    except:
-        return False
+    sql = "INSERT INTO moves_in_template (template_id, move_id, number_of_sets) \
+        VALUES (:template_id, :move_id, :number_of_sets)"
+    DB.session.execute(
+        sql,
+        {"template_id":template_id,
+        "move_id":move_id,
+        "number_of_sets":number_of_sets}
+    )
+    DB.session.commit()
 
 def delete_template(template_id):
-    try:
-        sql = "DELETE FROM trainingtemplates WHERE id=:template_id"
-        DB.session.execute(sql, {"template_id":template_id})
-        DB.session.commit()
-        return True
-    except:
-        return False
+    sql = "DELETE FROM trainingtemplates WHERE id=:template_id"
+    DB.session.execute(sql, {"template_id":template_id})
+    DB.session.commit()
 
 def get_template_owner(template_id):
     sql = "SELECT user_id FROM trainingtemplates WHERE id=:template_id"

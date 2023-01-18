@@ -2,15 +2,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask import session
 from db import DB
 
-def get_followable_users():
-    sql = "SELECT id, username FROM users WHERE allow_follow=true"
-    result = DB.session.execute(sql)
-    users = result.fetchall()
-    return users
-
 def register_user(username, password):
     hash_pass = generate_password_hash(password)
 
+    # Users need to have unique usernames, so use try-except.
     try:
         sql = "INSERT INTO users (username, password) VALUES (:username, :password)"
         DB.session.execute(sql, {"username":username, "password":hash_pass})
@@ -32,14 +27,10 @@ def login(username, password):
     return False
 
 def update_user(username, allow_follow):
-    try:
-        sql = "UPDATE users SET allow_follow=:allow_follow WHERE username=:username"
-        bool_value = allow_follow.lower() == "true"
-        DB.session.execute(sql, {"username": username, "allow_follow": bool_value})
-        DB.session.commit()
-        return True
-    except:
-        return False
+    sql = "UPDATE users SET allow_follow=:allow_follow WHERE username=:username"
+    bool_value = allow_follow.lower() == "true"
+    DB.session.execute(sql, {"username": username, "allow_follow": bool_value})
+    DB.session.commit()
 
 def get_allow_follow(username):
     sql = "SELECT allow_follow FROM users WHERE username=:username"
@@ -47,19 +38,15 @@ def get_allow_follow(username):
     return result.fetchone()["allow_follow"]
 
 def follow_unfollow(follower_id, followed_user_id, follow):
-    try:
-        if follow:
-            sql = "INSERT INTO followedusers (follower_id, followed_user_id) \
-                VALUES (:follower_id, :followed_user_id)"
-        else:
-            sql = "DELETE FROM followedusers \
-                WHERE follower_id=:follower_id AND followed_user_id=:followed_user_id"
+    if follow:
+        sql = "INSERT INTO followedusers (follower_id, followed_user_id) \
+            VALUES (:follower_id, :followed_user_id)"
+    else:
+        sql = "DELETE FROM followedusers \
+            WHERE follower_id=:follower_id AND followed_user_id=:followed_user_id"
 
-        DB.session.execute(sql, {"follower_id":follower_id, "followed_user_id":followed_user_id})
-        DB.session.commit()
-        return True
-    except:
-        return False
+    DB.session.execute(sql, {"follower_id":follower_id, "followed_user_id":followed_user_id})
+    DB.session.commit()
 
 def get_userlist_with_followinfo(user_id):
     sql = "SELECT U.id, U.username, U.allow_follow, F.followed_user_id, F.follower_id \

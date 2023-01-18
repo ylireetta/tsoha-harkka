@@ -1,22 +1,14 @@
 from db import DB
 
 def create_notification(action_id):
-    try:
-        sql = "INSERT INTO notifications (action_id) VALUES (:action_id)"
-        DB.session.execute(sql, {"action_id":action_id})
-        DB.session.commit()
-        return True
-    except:
-        return False
+    sql = "INSERT INTO notifications (action_id) VALUES (:action_id)"
+    DB.session.execute(sql, {"action_id":action_id})
+    DB.session.commit()
 
 def mark_as_seen(notification_id):
-    try:
-        sql = "UPDATE notifications SET (seen, seen_at)=(true, NOW()) WHERE id=:notification_id"
-        DB.session.execute(sql, {"notification_id":notification_id})
-        DB.session.commit()
-        return True
-    except:
-        return False
+    sql = "UPDATE notifications SET (seen, seen_at)=(true, NOW()) WHERE id=:notification_id"
+    DB.session.execute(sql, {"notification_id":notification_id})
+    DB.session.commit()
 
 def get_users_notifications(user_id):
     sql = "SELECT N.id, A.user_id, U.username, A.target_id, A.actiontype, A.actiondate, A.content \

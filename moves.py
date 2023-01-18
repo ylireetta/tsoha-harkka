@@ -25,6 +25,7 @@ def search_moves(query, **kwargs):
     return moves
 
 def add_move(new_move, user_id):
+    # All visible moves need to have a unique name, so use try-except.
     try:
         sql = "INSERT INTO moves (move_name, added_by) VALUES (LOWER(:name), :user_id)"
         DB.session.execute(sql, {"name": new_move, "user_id": user_id})
@@ -34,14 +35,10 @@ def add_move(new_move, user_id):
         return False
 
 def delete_move(move_id):
-    try:
-        sql = "UPDATE moves SET visible=false \
-            WHERE id=:move_id"
-        DB.session.execute(sql, {"move_id":move_id})
-        DB.session.commit()
-        return True
-    except:
-        return False
+    sql = "UPDATE moves SET visible=false \
+        WHERE id=:move_id"
+    DB.session.execute(sql, {"move_id":move_id})
+    DB.session.commit()
 
 def get_move_owner(move_id):
     sql = "SELECT added_by \
