@@ -49,7 +49,7 @@ def register():
             return redirect("/register")
 
         if not users.register_user(username, password1):
-            flash("Registration unsuccessful.", "alert alert-danger")
+            flash(f"Registration unsuccessful - username {username} already taken.", "alert alert-danger")
             return redirect("/register")
 
     flash("Registered successfully - logged you in for convenience!", "alert alert-success")
