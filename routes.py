@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, session, flash
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 from app import APP
 import users
 import moves
@@ -57,7 +57,10 @@ def register():
             return redirect("/register")
 
         if not users.register_user(username, password1):
-            flash(f"Registration unsuccessful - username {username} already taken.", "alert alert-danger")
+            flash(
+                f"Registration unsuccessful - username {username} already taken.",
+                "alert alert-danger"
+            )
             return redirect("/register")
 
     flash("Registered successfully - logged you in for convenience!", "alert alert-success")
@@ -113,8 +116,11 @@ def get_trainingsessions(id_):
             main_info=main_info
         )
 
-    flash(f"No session with id {id_} found. \
-        Either session {id_} does not exist, or its creator has disabled following.", "alert alert-danger")
+    flash(
+        f"No session with id {id_} found. \
+        Either session {id_} does not exist, or its creator has disabled following.",
+        "alert alert-danger"
+    )
     return redirect("/")
 
 @APP.route("/moveslibrary")
@@ -278,7 +284,7 @@ def add_training_session():
             for move, reps, weights in zip(submitted_move_list,
             submitted_reps_list, submitted_weights_list):
                 trainingsessions.add_set(user_id, session_id, move, reps, weights)
-                
+
             trainingsessions.complete_session(session_id)
             flash("Training session successfully saved!", "alert alert-success")
         else:
