@@ -1,5 +1,28 @@
-# TSOHA App
+# How to run
+The app cannot be used in production as of now, so please follow these instructions to test:
+1. Clone this repository to your computer and navigate to the project root directory.
+2. Create a file called ```.env``` with the following contents:
+```
+DATABASE_URL=<local-address-for-database>
+SECRET_KEY=<secret-key-for-app>
+```
+3. Run the following commands to activate the virtual environment and install requirements:
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r ./requirements.txt
+```
+4. Run the following command to define the database schema:
+```
+psql < schema.sql
+```
+5. Run the following command to start the app:
+```
+flask run
+```
+6. Navigate to the url shown on the command line to use the app.
 
+# TSOHA Trainer's App
 The main point of TSOHA Trainer's App is to enable users to keep record of their workouts. They can also add new moves to the database if their desired move has yet to be added by someone else. Existing moves can be used to create training templates, which, in turn, can be used to quickly add predefined moves to a new workout session.
 
 No web application is complete without some sort of social aspect, so TSOHA Trainer's App users can also follow each other, as well as like and comment each other's workouts!
