@@ -1,4 +1,5 @@
 from flask import render_template, request, redirect, session, flash
+from flask_socketio import SocketIO, emit
 from app import APP
 import users
 import moves
@@ -6,6 +7,13 @@ import templates
 import trainingsessions
 import likesandcomments
 import notifications
+
+socketio = SocketIO(APP)
+
+@socketio.on("disconnect")
+def disconnect_user():
+    session.pop("username", None)
+    session.pop("user_id", None)
 
 @APP.route("/")
 def index():
