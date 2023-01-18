@@ -2,22 +2,29 @@
 
 The main point of TSOHA Trainer's App is to enable users to keep record of their workouts. They can also add new moves to the database if their desired move has yet to be added by someone else. Existing moves can be used to create training templates, which, in turn, can be used to quickly add predefined moves to a new workout session.
 
-No web application is complete without some social aspect, so TSOHA Trainer's App users can also follow each other, as well as like and comment each other's workouts!
+No web application is complete without some sort of social aspect, so TSOHA Trainer's App users can also follow each other, as well as like and comment each other's workouts!
 
 ## Registration and login
-New users can register with a _unique_ username. As of now, passwords can be whatever - there are no complexity requirements.
+New users can register with a _unique_ username. As of now, passwords can be whatever - there are no complexity requirements. If the selected username is already taken, or the two password fields do not match, the system informs the user about the problem. If the registration is successful, the new user is logged in automatically and redirected to the index page.
 
 
 ## Move database
-Users can add new moves to the database if their desired move is not already added. The database can be queried by providing a search phrase and specifying if the user wants to see only moves they themselves have added.
+Users can add new moves to the database if their desired move is not already added (i.e. move names need to be unique). The database can be queried by providing a search phrase and specifying if the user wants to see only moves they themselves have added. When a move is "deleted" from the system, the name can be used again when adding a new move.
 
 
 ## User database
 Users can inspect the list of all users in the system. If the listed users have specified that others should be allowed to follow their workout activity, the logged in user can choose to follow or unfollow the user in question, based on their current following status.
 
+
+## User profile
+Users can create new workout templates on their profile page. They can also specify if they want other users to be able to follow their workout activity in the system.
+
+## Training templates
+Users can create training templates on their profile page. At least one move from the moves database must be selected, and the number of sets per each selected move can be further defined, if necessary. The default number of sets per move is one.
+
 ## Training data
 ### Adding a new workout
-Users can add new workout records by adding moves, reps and used weights individually, or by selecting a workout template and using the data derived from the template. The system will prefill reps and weights for the selected moves if the user has previously logged workouts that include those selected moves.
+Users can add new workout records by adding moves, reps and used weights individually, or by selecting a workout template and using the data derived from the template. If the template includes multiple sets of the same move, a new table row for each set is added to the training data table. The system will prefill reps and weights for the selected moves if the user has previously logged workouts that include those selected moves.
 
 
 ### Current user's workout history
@@ -25,8 +32,5 @@ Users can inspect their own workout history by clicking individual training sess
 
 
 ### Followed users' workout history
-If the currently logged in user is following other users, and followed users have recorded workouts during the past 7 days in the system, followed users' workout data is displayed on the index page. The logged in user can like and comment individual sessions, and a notification related to each action is displayed to the session owner when they navigate to the index page. Users can also remove likes and comments that they have added.
+If the currently logged in user is following other users, and followed users have recorded workouts in the system, followed users' workout data is displayed on the index page. The workout data can be filtered by creation date. The logged in user can like and comment individual sessions, and a notification related to each action is shown to the session owner when they navigate to the index page. Users can also remove likes and comments that they have added.
 
-
-## User profile
-Users can create new workout templates on their profile page. They can also specify if they want other users to be able to follow their workout activity in the system.
