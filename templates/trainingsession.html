@@ -4,14 +4,32 @@
 
 {% block content %}
 <div class="col-sm">
-    <h1>Workout by {{main_info.username}} on {{main_info.created_at}}</h1>
+    <h1>
+        Workout by {{main_info.username}} on {{main_info.created_at}}
+    </h1>
     <div class="card">
-        <div class="card-body">
-            <ul>
-                {% for row in sessions %}
-                <li>{{row.reps}} reps of {{row.move_name}} with {{row.weights}} kg</li>
-                {% endfor %}  
-            </ul>
+        <div class="flex-container">
+            <div class="card-body flex-child">
+                <ul>
+                    {% for row in sessions %}
+                    <li>{{row.reps}} reps of {{row.move_name}} with {{row.weights}} kg</li>
+                    {% endfor %}  
+                </ul>
+            </div>
+            <div class="card-body flex-child" id="likes-info">
+                <form action="/like/{{main_info.session_id}}" method="POST">
+                    {% if main_info.liked_by_current_user %}
+                        <button type="submit" class="btn btn-link" name="removelike">
+                            <i class="bi bi-heart-fill"></i>
+                        </button>
+                        {% else %}
+                        <button type="submit" class="btn btn-link" name="like">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                    {% endif %}
+                    {{main_info.likes}}
+                </form>
+            </div>
         </div>
 
         <div class="card-body">

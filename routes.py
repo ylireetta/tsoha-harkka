@@ -92,7 +92,9 @@ def get_trainingsessions(id_):
         main_info = {
             "session_id": id_,
             "username": session_data[0].username,
-            "created_at": session_data[0].created_at
+            "created_at": session_data[0].created_at,
+            "likes": session_data[0].likes,
+            "liked_by_current_user": session_data[0].liked_by_current_user
         }
         return render_template(
             "trainingsession.html",
@@ -345,7 +347,7 @@ def toggle_like(id_):
         else:
             likesandcomments.remove_like(id_, session["user_id"])
 
-    return redirect("/")
+    return redirect(request.referrer)
 
 @APP.route("/addcomment/<int:id_>", methods=["GET", "POST"])
 def add_comment(id_):

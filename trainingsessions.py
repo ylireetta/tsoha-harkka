@@ -48,7 +48,11 @@ def get_recent_sessions(user_id):
     return result.fetchall()
 
 def get_session_data(user_id, session_id):
-    sql = "SELECT U.username, M.id AS move_id, M.move_name, S.reps, S.weights, TS.created_at \
+    sql = "SELECT U.username, M.id AS move_id, M.move_name, S.reps, S.weights, TS.created_at, \
+        (SELECT COUNT(*) FROM actions WHERE target_id=:session_id AND actiontype='like') AS likes, \
+        CASE WHEN :user_id IN \
+            (SELECT user_id FROM actions WHERE target_id=:session_id) \
+            THEN true ELSE false END AS liked_by_current_user  \
         FROM sets S \
         LEFT JOIN users U ON U.id=S.user_id \
         LEFT JOIN trainingsessions TS ON TS.id=S.session_id \

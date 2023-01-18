@@ -85,3 +85,16 @@ td {
 #users-table button {
     padding: 0;
 }
+
+.flex-container {
+    display: flex;
+}
+
+.flex-child {
+    flex: 1;
+}
+
+#likes-info form {
+    float: right;
+    font-size: 2em;
+}
